@@ -1,15 +1,15 @@
-"""Hulpmiddelen om nieuwe Mario vs Luigi stages op te bouwen.
+"""Helpers for building new Mario vs Luigi stages.
 
-Een nieuwe stage start als kopie van de originele VS-stage uit hetzelfde
-archief (zelfde tileset, achtergrond en sprite-sets). Daarna worden de
-objecten, sprites en startposities vervangen door een eigen ontwerp.
+A new stage starts as a copy of the original VS stage from the same archive
+(same tileset, background and sprite sets). The objects, sprites and start
+positions are then replaced with a new design.
 """
 import copy
 from nsmblevel import Level, Obj, Sprite, Entrance
 
-T0, T1 = 0, 1  # tileset-nummers in objecten
+T0, T1 = 0, 1  # tileset numbers used in objects
 
-# Gedeelde blokken uit tileset 0 (jyotyu)
+# Shared blocks from tileset 0 (jyotyu)
 BRICK = 44
 QBLOCK_COIN = 30
 QBLOCK_ITEM = 37
@@ -27,7 +27,7 @@ class StageBuilder:
         self.lvl.sprites = [copy.deepcopy(s) for s in base.sprites if keep_sprites(s)]
         self.star_id = 1
 
-    # ---- objecten ------------------------------------------------------
+    # ---- objects ------------------------------------------------------
     def obj(self, ts, num, x, y, w=1, h=1):
         if w > 0 and h > 0:
             self.lvl.objects.append(Obj(ts, num, x, y, w, h))
@@ -40,11 +40,11 @@ class StageBuilder:
         return self.obj(T0, COIN, x, y, w, h)
 
     def box(self, x0, y0, x1, y1, kit, open_left=False, open_right=False, bottom=False):
-        """Rechthoekig terreinblok met randen.
+        """Rectangular block of terrain with edges.
 
-        kit: dict met objectnummers (tileset 1) voor tl, top, tr, left,
-        right, fill en optioneel bl, bottom, br.
-        open_left/open_right laten de zijrand weg (voor de wrap-rand)."""
+        kit: dict of object numbers (tileset 1) for tl, top, tr, left,
+        right, fill and optionally bl, bottom, br.
+        open_left/open_right leave out the side edge (for the wrap edge)."""
         w = x1 - x0 + 1
         lx = x0 if open_left else x0 + 1
         rx = x1 if open_right else x1 - 1
@@ -74,19 +74,19 @@ class StageBuilder:
         return self
 
     def star(self, x, y):
-        """Spawnpunt voor de grote ster (sprite 210), automatisch genummerd."""
+        """Spawn point for the Big Star (sprite 210), numbered automatically."""
         self.sprite(210, x, y, bytes([0, 0, self.star_id, 0, 0, 0]))
         self.star_id += 1
         return self
 
     def spawns(self, p1, p2):
-        """Startposities (in tegels) voor speler 1 en 2. y = rij boven de grond."""
+        """Start positions (in tiles) for player 1 and 2. y = the row above the ground."""
         for e, (x, y) in zip(self.lvl.entrances[:2], (p1, p2)):
             e.set(x=x * 16, y=y * 16)
         return self
 
     def view_size(self, w, h, y=None):
-        """Wijzig de camera-view (in tegels)."""
+        """Change the camera view (in tiles)."""
         v = self.lvl.views[0]
         v.w, v.h = w * 16, h * 16
         if y is not None:

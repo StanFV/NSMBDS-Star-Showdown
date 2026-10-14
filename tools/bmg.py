@@ -1,15 +1,15 @@
-"""Minimale bewerker voor BMG-berichtbestanden (MESGbmg1, UTF-16).
+"""Minimal editor for BMG message files (MESGbmg1, UTF-16).
 
-Bestaande teksten blijven byte-voor-byte staan (ze kunnen escape-codes
-bevatten). Een gewijzigd bericht wordt achteraan DAT1 toegevoegd en alleen
-de pointer in INF1 wordt aangepast.
+Existing texts are kept byte for byte (they can contain escape codes).
+A changed message is appended to the end of DAT1 and only its pointer in
+INF1 is updated.
 """
 import struct
 
 
 class BMG:
     def __init__(self, data: bytes):
-        assert data[:8] == b'MESGbmg1', 'geen BMG'
+        assert data[:8] == b'MESGbmg1', 'not a BMG file'
         self.header = bytearray(data[:0x20])
         self.sections = []
         pos = 0x20
@@ -31,7 +31,7 @@ class BMG:
         return struct.unpack_from('<I', self.inf, 8 + i * self.entry_size)[0]
 
     def get(self, i):
-        """Tekst tot de eerste 0x0000 (alleen bedoeld voor gewone teksten)."""
+        """Text up to the first 0x0000 (only meant for plain texts)."""
         off, end = self._off(i), self._off(i)
         while end + 1 < len(self.dat) and self.dat[end:end + 2] != b'\0\0':
             end += 2
@@ -44,7 +44,7 @@ class BMG:
         raise KeyError(text)
 
     def set(self, i, text):
-        # DAT1 eindigt mogelijk met opvulling; nieuwe tekst 2-byte uitgelijnd erachter
+        # DAT1 may end with padding; append the new text 2-byte aligned
         while len(self.dat) % 2:
             self.dat.append(0)
         off = len(self.dat)

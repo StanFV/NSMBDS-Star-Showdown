@@ -1,18 +1,18 @@
-"""Renderer voor NSMB DS levels (alleen voor previews tijdens het ontwerpen).
+"""Renderer for NSMB DS levels (only for previews while designing).
 
-Gebaseerd op de tileset- en objectlogica van NSMB Editor (GPLv3).
-Rendert de objectlagen (tileset 0, 1 en 2) naar een PIL-afbeelding.
-Sprites worden als gekleurde markeringen getekend.
+Based on the tileset and object logic of NSMB Editor (GPLv3).
+Renders the object layers (tilesets 0, 1 and 2) to a PIL image.
+Sprites are drawn as coloured markers.
 """
 import struct
 import ndspy.lz10
 from PIL import Image, ImageDraw
 
 FILE_OFFSET_EU = 135
-# Objecten uit tileset 0 waarvan de graphics niet in de basistileset zitten
-# (pijpen); die worden in previews benaderd.
+# Objects from tileset 0 whose graphics are not in the base tileset
+# (pipes); previews approximate them.
 PIPE_OBJECTS = {53, 54, 78, 79, 82, 101, 102}
-# Offsets van de tilesettabellen in overlay 0 (EU)
+# Offsets of the tileset tables in overlay 0 (EU)
 TABLES_EU = {
     'UNT_HD': 0x2F0F8, 'UNT': 0x2F228, 'CHK': 0x2F358, 'NCG': 0x306B8,
     'NCL': 0x30CA8, 'PNL': 0x30F08,
@@ -78,7 +78,7 @@ class Tileset:
         return objs
 
     def tile16(self, t):
-        """Render map16 tegel t (16x16) als RGBA."""
+        """Render map16 tile t (16x16) as RGBA."""
         if t in self._cache:
             return self._cache[t]
         img = Image.new('RGBA', (16, 16), (0, 0, 0, 0))
@@ -106,7 +106,7 @@ class Tileset:
         self._cache[t] = img
         return img
 
-    # ---- objecten -----------------------------------------------------
+    # ---- objects -----------------------------------------------------
     def render_object(self, num, w, h):
         dest = [[-2] * w for _ in range(h)]
         if num >= len(self.objects) or not self.objects[num]:
@@ -204,7 +204,7 @@ class Tileset:
 
 
 def _pipe_tile(col, width):
-    """Benadering van een groene pijptegel voor previews."""
+    """Approximation of a green pipe tile for previews."""
     img = Image.new('RGBA', (16, 16), (40, 152, 40, 255))
     d = ImageDraw.Draw(img)
     if col == 0:
@@ -258,7 +258,7 @@ class LevelRenderer:
                     if t == -2:
                         continue
                     if o.tileset == 0 and (t >= 768 or o.num in PIPE_OBJECTS):
-                        # speciale (geanimeerde) tegels zoals pijpen: benaderen
+                        # special (animated) tiles such as pipes: approximate them
                         grid[(o.x + xx, o.y + yy)] = ('pipe', xx, o.w)
                         continue
                     grid[(o.x + xx, o.y + yy)] = (o.tileset, max(t, 0))

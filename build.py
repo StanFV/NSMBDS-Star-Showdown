@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Bouwt Star Showdown (Mario vs Luigi rom hack) uit een eigen, legaal verkregen Europese ROM.
+"""Builds Star Showdown (Mario vs Luigi rom hack) from your own, legally obtained European ROM.
 
-Gebruik:
+Usage:
     python3 build.py "New Super Mario Bros. (Europe) (En,Fr,De,Es,It).nds"
 
-Uitvoer:
-    out/StarShowdown.nds            de gepatchte ROM
-    out/StarShowdown.xdelta         xdelta3-patch (alleen als xdelta3 beschikbaar is)
-    out/previews/*.png              previews van de nieuwe stages
+Output:
+    out/StarShowdown.nds            the patched ROM
+    out/StarShowdown.xdelta         xdelta3 patch (only if xdelta3 is installed)
+    out/previews/*.png              previews of the new stages
 """
 import argparse
 import hashlib
@@ -35,13 +35,13 @@ from nsmbgfx import LevelRenderer
 from nsmblevel import Level
 
 ORIGINAL_SHA1 = 'b0f7886720e842ed922569e1bb5c39c0fa090331'
-FILE_OFFSET = 135  # bestands-ID's in de tabellen zijn relatief
-THUMB_AREA = 192  # uitsnede in pixels voor een thumbnail (48x48)
+FILE_OFFSET = 135  # file IDs in the tables are relative
+THUMB_AREA = 192  # crop size in pixels for a thumbnail (48x48)
 
-# Elke pagina heeft vijf plekken; plek k gebruikt altijd het thema-archief van
-# originele stage k (zelfde tileset, achtergrond en vijanden).
+# Every page has five slots; slot k always uses the theme archive of
+# original stage k (same tileset, background and enemies).
 SLOTS = [
-    # basisstage, archief, achtergrondkleur voor previews
+    # base stage, archive, background colour for previews
     ('J01_1', 'Dat_Field', (92, 148, 252)),
     ('J02_1', 'Dat_Basement', (20, 24, 48)),
     ('J03_1', 'Dat_Ice', (168, 208, 248)),
@@ -49,21 +49,21 @@ SLOTS = [
     ('J05_1', 'Dat_Fort', (40, 48, 104)),
 ]
 
-# Per pagina vijf stages: (ontwerpfunctie, thumbnail-uitsnede in tegels)
+# Five stages per page: (design function, thumbnail crop in tiles)
 PAGES = [
-    [(stages.heuvelrug, (23, 8)), (stages.steengroeve, (6, 7)), (stages.ijsbaan, (36, 14)),
-     (stages.buizenstelsel, (22, 11)), (stages.kantelen, (14, 9))],
-    [(stages.zweefeilanden, (20, 10)), (stages.doolhof, (8, 6)), (stages.glijbaan, (54, 14)),
-     (stages.pijpenorgel, (14, 11)), (stages.kerker, (22, 6))],
-    [(stages.trappenpiramide, (22, 4)), (stages.muntenkluis, (8, 8)), (stages.bevrorenmeer, (54, 8)),
-     (stages.riool, (16, 10)), (stages.torenspits, (22, 4))],
+    [(stages.hilltop, (23, 8)), (stages.quarry, (6, 7)), (stages.snowfield, (36, 14)),
+     (stages.pipeworks, (22, 11)), (stages.battlements, (14, 9))],
+    [(stages.sky_islands, (20, 10)), (stages.labyrinth, (8, 6)), (stages.ice_slide, (54, 14)),
+     (stages.pipe_organ, (14, 11)), (stages.dungeon, (22, 6))],
+    [(stages.step_pyramid, (22, 4)), (stages.coin_vault, (8, 8)), (stages.frozen_lake, (54, 8)),
+     (stages.sewer, (16, 10)), (stages.spire, (22, 4))],
 ]
 
-# Op pagina 2 worden de stages ook als gewoon bestand opgeslagen (J06..J10),
-# handig voor tests in single-player.
+# The stages on page 2 are also stored as regular files (J06..J10),
+# which is handy for single-player tests.
 FAT_COPIES = ['J06_1', 'J07_1', 'J08_1', 'J09_1', 'J10_1']
 
-# Extra regel onder "Kies een stage" (bericht 12 in menu_title_*.narc[20])
+# Extra line below "Select a course." (message 12 in menu_title_*.narc[20])
 LR_HINT = {
     'EEN': 'L/R: more courses',
     'EFR': 'L/R : autres niveaux',
@@ -73,7 +73,7 @@ LR_HINT = {
 }
 MSG_SELECT_COURSE = 12
 
-# Bestanden die alleen door de story mode gebruikt worden
+# Files that are only used by the story mode
 STORY_ONLY = re.compile(r'^(demo|demoM|ending|map)/|^course/[A-H]\d\d_')
 
 
@@ -82,7 +82,7 @@ def log(msg):
 
 
 # ---------------------------------------------------------------------------
-# Hulpfuncties voor ARM9
+# ARM9 helpers
 # ---------------------------------------------------------------------------
 def arm9_patch(arm9, addr, fmt, value, expect=None):
     for s in arm9.sections:
@@ -106,13 +106,13 @@ def arm9_read(arm9, addr, fmt):
 
 
 # ---------------------------------------------------------------------------
-# Thumbnails (sub-OBJ, 4bpp, 48x48 uit 4 sprites)
+# Thumbnails (sub-OBJ, 4bpp, 48x48 made of 4 sprites)
 # ---------------------------------------------------------------------------
 def thumb_to_obj(img, template):
-    """Zet een 48x48 RGB-afbeelding om naar 36 tegels (1152 bytes) + palet (32 bytes).
+    """Convert a 48x48 RGB image to 36 tiles (1152 bytes) + a palette (32 bytes).
 
-    Een thumbnail bestaat uit vier sprites: 32x32 (tegel 0-15), 16x32 rechts
-    (16-23), 32x16 onder (24-31) en 16x16 rechtsonder (32-35)."""
+    A thumbnail consists of four sprites: 32x32 (tiles 0-15), 16x32 on the
+    right (16-23), 32x16 at the bottom (24-31) and 16x16 bottom right (32-35)."""
     q = img.convert('RGB').quantize(colors=15, method=Image.Quantize.MEDIANCUT)
     pal = q.getpalette()[:45]
     px = q.load()
@@ -146,16 +146,16 @@ def thumb_to_obj(img, template):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('rom', help='originele Europese NSMB ROM (.nds)')
+    ap.add_argument('rom', help='original European NSMB ROM (.nds)')
     ap.add_argument('-o', '--out', default=os.path.join(HERE, 'out'))
-    ap.add_argument('--keep-story', action='store_true', help='story-bestanden niet verwijderen')
-    ap.add_argument('--no-verify', action='store_true', help='SHA-1 van de ROM niet controleren')
+    ap.add_argument('--keep-story', action='store_true', help='do not remove the story mode files')
+    ap.add_argument('--no-verify', action='store_true', help='do not check the SHA-1 of the ROM')
     args = ap.parse_args()
 
     raw = open(args.rom, 'rb').read()
     sha1 = hashlib.sha1(raw).hexdigest()
     if sha1 != ORIGINAL_SHA1 and not args.no_verify:
-        sys.exit(f'Onverwachte ROM (SHA-1 {sha1}).\nVerwacht: New Super Mario Bros. (Europe) (En,Fr,De,Es,It), '
+        sys.exit(f'Unexpected ROM (SHA-1 {sha1}).\nExpected: New Super Mario Bros. (Europe) (En,Fr,De,Es,It), '
                  f'SHA-1 {ORIGINAL_SHA1}')
     os.makedirs(os.path.join(args.out, 'previews'), exist_ok=True)
 
@@ -164,8 +164,8 @@ def main():
     ovs = rom.loadArm9Overlays()
     renderer = LevelRenderer(rom)
 
-    # ---- 1. nieuwe stages ------------------------------------------------
-    print('Nieuwe stages bouwen')
+    # ---- 1. new stages ---------------------------------------------------
+    print('Building new stages')
     entries_orig = [arm9_read(arm9, codepatch.COURSE_BIN_J01 + 4 * i, '<I') for i in range(5)] + \
                    [arm9_read(arm9, codepatch.COURSE_BGDAT_J01 + 4 * i, '<I') for i in range(5)]
     entries_pages = [entries_orig]
@@ -180,7 +180,7 @@ def main():
                                   rom.getFileByName(f'course/{base}_bgdat.bin'))
             lvl_bin, lvl_bg = design(base_lvl).build()
 
-            # a) gewoon bestand (alleen pagina 2), anders verwijst de cartridge-ID naar de basisstage
+            # a) regular file (page 2 only); otherwise the cartridge ID points to the base stage
             if page_no == 2:
                 target = FAT_COPIES[slot]
                 rom.setFileByName(f'course/{target}.bin', lvl_bin)
@@ -190,8 +190,8 @@ def main():
             fat_bin = rom.filenames.idOf(f'course/{target}.bin')
             fat_bg = rom.filenames.idOf(f'course/{target}_bgdat.bin')
 
-            # b) in het VS-archief (wordt in Mario vs Luigi gebruikt)
-            arc_hi = entries_orig[slot] >> 24                  # bv. 0xC2 voor a02
+            # b) in the VS archive (used by Mario vs Luigi)
+            arc_hi = entries_orig[slot] >> 24                  # e.g. 0xC2 for a02
             if archive not in narcs:
                 narcs[archive] = (arc_hi, ndspy.narc.NARC(rom.getFileByName(f'ARCHIVE/{archive}.narc')))
             narc = narcs[archive][1]
@@ -200,7 +200,7 @@ def main():
             entries[slot] = ((arc_hi << 8 | idx_bin) << 16) | (fat_bin - FILE_OFFSET)
             entries[5 + slot] = ((arc_hi << 8 | (idx_bin + 1)) << 16) | (fat_bg - FILE_OFFSET)
 
-            # c) preview en thumbnail
+            # c) preview and thumbnail
             lvl = Level.load(lvl_bin, lvl_bg)
             v = lvl.views[0]
             full = renderer.render(lvl, sprites=False, bg=bgcol, crop=(v.x, v.y, v.x + v.w, v.y + v.h))
@@ -208,12 +208,12 @@ def main():
             cx, cy = crop[0] * 16, crop[1] * 16
             th = renderer.render(lvl, sprites=False, bg=bgcol).crop((cx, cy, cx + THUMB_AREA, cy + THUMB_AREA))
             thumbs.append(th.resize((48, 48), Image.LANCZOS))
-            log(f'pagina {page_no}: {design.__name__:15s} -> {archive}[{idx_bin}]  '
+            log(f'page {page_no}: {design.__name__:15s} -> {archive}[{idx_bin}]  '
                 f'({len(lvl_bin)}+{len(lvl_bg)} bytes)')
         entries_pages.append(entries)
         thumbs_pages.append(thumbs)
 
-    # archieven opslaan en hun bovengrens in de archieftabel ophogen
+    # save the archives and raise their upper bound in the archive table
     for archive, (arc_hi, narc) in narcs.items():
         rom.setFileByName(f'ARCHIVE/{archive}.narc', narc.save())
         for i in range(0x30):
@@ -224,10 +224,10 @@ def main():
                 arm9_patch(arm9, row + 0x0E, '<H', lo + len(narc.files), expect=hi)
                 break
         else:
-            raise RuntimeError(f'archief {arc_hi:#x} niet gevonden')
+            raise RuntimeError(f'archive {arc_hi:#x} not found')
 
     # ---- 2. thumbnails ----------------------------------------------------
-    print('Thumbnails maken')
+    print('Making thumbnails')
     tiles0 = ndspy.lz10.decompress(ndspy.narc.NARC(rom.getFileByName('ARCHIVE/menu_title_EEN.narc')).files[9])
     tiles0 = bytes(tiles0[36 * 32:36 * 32 + codepatch.THUMB_TILES_SIZE])
     pals_all = ndspy.lz10.decompress(ndspy.narc.NARC(rom.getFileByName('ARCHIVE/menu_title.narc')).files[12])
@@ -246,11 +246,11 @@ def main():
             sheet.paste(img, (k * 52 + 2, row * 52 + 2))
     sheet.resize((sheet.width * 3, sheet.height * 3), Image.NEAREST).save(
         os.path.join(args.out, 'previews', 'thumbnails.png'))
-    # een woord waarop alle pagina's van elkaar verschillen (om VRAM te controleren)
+    # a word where all pages differ from each other (used to check VRAM)
     check_off = next(i for i in range(0, codepatch.THUMB_TILES_SIZE, 4)
                      if len({d[i:i + 4] for d in page_data}) == len(page_data))
 
-    # ---- 2b. hinttekst in het menu ---------------------------------------
+    # ---- 2b. hint text in the menu ---------------------------------------
     for lang, hint in LR_HINT.items():
         name = f'ARCHIVE/menu_title_{lang}.narc'
         narc = ndspy.narc.NARC(rom.getFileByName(name))
@@ -260,13 +260,13 @@ def main():
         rom.setFileByName(name, narc.save())
 
     # ---- 3. code -----------------------------------------------------------
-    print('Code patchen')
+    print('Patching code')
     section, syms = codepatch.build_section(entries_pages, page_data, check_off)
     arm9.sections.insert(len(arm9.sections) - 1,
                          ndspy.code.MainCodeFile.Section(section, codepatch.ARENA_LO, 0))
     arm9_patch(arm9, codepatch.ARENA_LO_LITERAL, '<I', codepatch.ARENA_LO + len(section),
                expect=codepatch.ARENA_LO)
-    log(f'{len(entries_pages)} pagina\'s, extra code/data: {len(section)} bytes op {codepatch.ARENA_LO:#x}')
+    log(f'{len(entries_pages)} pages, extra code/data: {len(section)} bytes at {codepatch.ARENA_LO:#x}')
 
     ov52 = ovs[52]
     ov52.data = codepatch.patch_overlay52(ov52.data, ov52.ramAddress, syms)
@@ -280,24 +280,24 @@ def main():
     rom.arm9OverlayTable = ndspy.code.saveOverlayTable(ovs)
     rom.arm9 = arm9.save(compress=False)
 
-    # ---- 4. story mode verwijderen -----------------------------------------
+    # ---- 4. remove the story mode -----------------------------------------
     if not args.keep_story:
-        print('Story mode verwijderen')
+        print('Removing the story mode')
         removed = 0
         for fid in range(len(rom.files)):
             name = rom.filenames.filenameOf(fid) or ''
             if STORY_ONLY.match(name):
                 removed += len(rom.files[fid])
                 rom.files[fid] = b''
-        log(f'{removed / 1e6:.1f} MB aan story-bestanden verwijderd')
+        log(f'removed {removed / 1e6:.1f} MB of story mode files')
 
-    # ---- 5. opslaan ---------------------------------------------------------
+    # ---- 5. save ---------------------------------------------------------
     rom.name = bytearray(b'STARSHOWDOWN')
     rom.iconBanner = set_banner(rom.iconBanner, 'Star Showdown\nMario vs Luigi rom hack\n20 arenas',
                                 Image.open(os.path.join(HERE, 'docs', 'icon.png')))
     out_rom = os.path.join(args.out, 'StarShowdown.nds')
     rom.saveToFile(out_rom)
-    print(f'Klaar: {out_rom} ({os.path.getsize(out_rom) / 1e6:.1f} MB)')
+    print(f'Done: {out_rom} ({os.path.getsize(out_rom) / 1e6:.1f} MB)')
 
     if shutil.which('xdelta3'):
         patch = os.path.join(args.out, 'StarShowdown.xdelta')

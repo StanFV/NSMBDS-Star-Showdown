@@ -1,21 +1,21 @@
-"""De vijf nieuwe Mario vs Luigi stages.
+"""The new Mario vs Luigi stages.
 
-Elke stage hoort bij een thema-archief van een originele stage en gebruikt
-daardoor dezelfde tileset, achtergrond en vijanden:
+Every stage belongs to the theme archive of one of the original stages and
+therefore uses the same tileset, background and enemies:
 
-  slot 0  Dat_Field     (basis J01)  ->  Heuvelrug
-  slot 1  Dat_Basement  (basis J02)  ->  Steengroeve
-  slot 2  Dat_Ice       (basis J03)  ->  IJsbaan
-  slot 3  Dat_Pipe      (basis J04)  ->  Buizenstelsel
-  slot 4  Dat_Fort      (basis J05)  ->  Kantelen
+  slot 0  Dat_Field     (base J01)  grass
+  slot 1  Dat_Basement  (base J02)  underground
+  slot 2  Dat_Ice       (base J03)  ice
+  slot 3  Dat_Pipe      (base J04)  pipes
+  slot 4  Dat_Fort      (base J05)  castle
 
-Coordinaten zijn in tegels van 16x16 pixels.
+Coordinates are in 16x16 pixel tiles.
 """
 from stagebuilder import (StageBuilder, T0, T1, BRICK, QBLOCK_COIN, QBLOCK_ITEM,
                           BRICK_ITEM, USED_BLOCK, STONE, PIPE)
 
-# Terreinsets (tileset 1 objectnummers) die in de standaard "I_M" tilesets
-# dezelfde betekenis hebben (gras, sneeuw).
+# Terrain kit (tileset 1 object numbers) that means the same thing in the
+# standard "I_M" tilesets (grass, snow).
 STD_KIT = dict(tl=7, top=10, tr=9, left=6, right=8, fill=1, bl=12, bottom=11, br=13)
 
 
@@ -23,103 +23,101 @@ def _is(o, ts, num):
     return o.tileset == ts and o.num == num
 
 
-def heuvelrug(base):
-    """Grasland met een hoge centrale heuvel en twee verhoogde uiteinden."""
+def hilltop(base):
+    """Grassland with a tall central hill and two raised ends."""
     b = StageBuilder(base,
-                     keep_objects=lambda o: _is(o, T0, 2),           # onzichtbare hulpobjecten
-                     keep_sprites=lambda s: s.type in (195, 196))    # wrap-markeringen
+                     keep_objects=lambda o: _is(o, T0, 2),           # invisible helper objects
+                     keep_sprites=lambda s: s.type in (195, 196))    # wrap markers
     k = STD_KIT
-    # Grond (view is 64 x 18 tegels, onderste rij is y=17)
+    # Ground (the view is 64 x 18 tiles, the bottom row is y=17)
     b.box(0, 14, 11, 17, k, open_left=True)
     b.box(15, 16, 25, 17, k)
-    b.box(28, 11, 35, 17, k)            # centrale heuvel
+    b.box(28, 11, 35, 17, k)            # central hill
     b.box(38, 16, 48, 17, k)
     b.box(52, 14, 63, 17, k, open_right=True)
-    # Zwevende blokken
+    # Floating blocks
     b.block_row(BRICK, 3, 10, 6).obj(T0, QBLOCK_ITEM, 5, 10).obj(T0, QBLOCK_COIN, 6, 10)
     b.block_row(BRICK, 17, 12, 3).obj(T0, QBLOCK_COIN, 20, 12).block_row(BRICK, 21, 12, 3)
     b.block_row(BRICK, 26, 7, 12).obj(T0, QBLOCK_ITEM, 31, 7).obj(T0, QBLOCK_ITEM, 32, 7)
     b.block_row(BRICK, 40, 12, 3).obj(T0, QBLOCK_COIN, 43, 12).block_row(BRICK, 44, 12, 3)
     b.block_row(BRICK, 55, 10, 6).obj(T0, QBLOCK_COIN, 57, 10).obj(T0, QBLOCK_ITEM, 58, 10)
     b.block_row(BRICK, 12, 6, 3).block_row(BRICK, 49, 6, 3)
-    # Munten
+    # Coins
     b.coins(4, 8, 4).coins(56, 8, 4).coins(29, 5, 6).coins(13, 4, 1).coins(50, 4, 1)
     b.coins(12, 12, 3).coins(49, 12, 3).coins(30, 9, 4)
-    # Vijanden
+    # Enemies
     b.sprite(148, 20, 15).sprite(148, 43, 15).sprite(149, 8, 13).sprite(149, 56, 13)
-    # Sterpunten
+    # Star spawn points
     for x, y in ((6, 8), (20, 10), (31, 5), (43, 10), (57, 8), (13, 4), (50, 4), (31, 10), (2, 13)):
         b.star(x, y)
     b.spawns((3, 13), (60, 13))
     return b
 
 
-def steengroeve(base):
-    """Ondergrondse grot van stenen met symmetrische richels op vijf hoogtes."""
+def quarry(base):
+    """Underground cave of bricks with symmetrical ledges at five heights."""
     b = StageBuilder(base,
                      keep_sprites=lambda s: s.type in (195, 196, 80))
     W = 32
-    # Vloer (twee rijen) met een stenen verhoging in het midden
+    # Floor (two rows) with a raised stone section in the middle
     b.block_row(BRICK, 0, 20, 12).block_row(BRICK, 20, 20, 12)
     b.obj(T0, BRICK, 0, 21, 12, 3).obj(T0, BRICK, 20, 21, 12, 3)
     b.obj(T1, 7, 12, 20).obj(T1, 10, 13, 20, 6, 1).obj(T1, 9, 19, 20)
     b.obj(T1, 6, 12, 21, 1, 3).obj(T1, 8, 19, 21, 1, 3).obj(T1, 3, 13, 21, 6, 3)
-    # Pilaren naast het midden
+    # Pillars next to the middle
     b.obj(T0, BRICK, 9, 17, 1, 3).obj(T0, BRICK, 22, 17, 1, 3)
-    # Richels (spiegelbeeldig)
+    # Ledges (mirrored)
     b.block_row(BRICK, 2, 16, 5).block_row(BRICK, W - 7, 16, 5)
     b.obj(T0, QBLOCK_ITEM, 4, 16).obj(T0, QBLOCK_ITEM, W - 5, 16)
     b.block_row(BRICK, 10, 13, 12).obj(T0, QBLOCK_COIN, 14, 13).obj(T0, QBLOCK_COIN, 17, 13)
-    b.block_row(BRICK, 0, 10, 6).block_row(BRICK, W - 6, 10, 6)   # loopt door over de wrap-rand
+    b.block_row(BRICK, 0, 10, 6).block_row(BRICK, W - 6, 10, 6)   # continues across the wrap edge
     b.obj(T0, BRICK_ITEM, 3, 10).obj(T0, BRICK_ITEM, W - 4, 10)
     b.block_row(BRICK, 12, 7, 8).obj(T0, QBLOCK_ITEM, 15, 7).obj(T0, QBLOCK_ITEM, 16, 7)
     b.block_row(BRICK, 6, 4, 3).block_row(BRICK, W - 9, 4, 3)
-    # Munten
+    # Coins
     b.coins(14, 18, 4).coins(3, 14, 3).coins(W - 6, 14, 3).coins(12, 11, 2).coins(18, 11, 2)
     b.coins(1, 8, 4).coins(W - 5, 8, 4).coins(14, 5, 4).coins(7, 2, 1).coins(W - 8, 2, 1)
-    # Vijanden
+    # Enemies
     b.sprite(148, 5, 19).sprite(148, W - 6, 19).sprite(149, 15, 12, bytes([0, 0, 1, 0, 0, 0]))
-    # Sterpunten
+    # Star spawn points
     for x, y in ((15, 18), (4, 14), (W - 5, 14), (15, 11), (2, 8), (W - 3, 8), (15, 5), (7, 2), (W - 8, 2)):
         b.star(x, y)
     b.spawns((4, 19), (W - 5, 19))
     return b
 
 
-def ijsbaan(base):
-    """Brede sneeuwvlakte met ijsplatforms en drie afgronden."""
+def snowfield(base):
+    """Wide snowfield with ice platforms and three pits."""
     b = StageBuilder(base,
                      keep_objects=lambda o: _is(o, T0, 2),
                      keep_sprites=lambda s: s.type in (195, 196))
     k = STD_KIT
     ICE = 32
-    # Grondstukken: (x0, x1, bovenkant)
+    # Ground pieces: (x0, x1, top)
     ground = [(0, 16, 25), (21, 36, 23), (37, 45, 25), (50, 61, 21), (62, 70, 25),
               (75, 89, 23), (90, 97, 25), (102, 114, 22), (115, 127, 25)]
     for i, (x0, x1, top) in enumerate(ground):
         b.box(x0, top, x1, 27, k, open_left=(x0 == 0), open_right=(x1 == 127))
-    # Hoogteverschillen zonder gat: zijwand van het hogere stuk volstaat,
-    # maar de lage buren beginnen direct naast de hogere stukken.
-    # IJsplatforms
+    # Ice platforms
     for x, y, w in ((6, 21, 6), (25, 18, 7), (39, 15, 8), (53, 16, 6), (64, 20, 5),
                     (78, 18, 7), (92, 14, 6), (105, 17, 6), (119, 21, 5)):
         b.obj(T1, ICE, x, y, w, 1)
-    # Blokken
+    # Blocks
     b.block_row(BRICK, 12, 17, 4).obj(T0, QBLOCK_ITEM, 13, 17)
     b.block_row(BRICK, 31, 12, 5).obj(T0, QBLOCK_COIN, 33, 12)
     b.block_row(BRICK, 55, 11, 3).obj(T0, QBLOCK_ITEM, 56, 11)
     b.block_row(BRICK, 70, 15, 4).obj(T0, QBLOCK_COIN, 71, 15)
     b.block_row(BRICK, 84, 12, 5).obj(T0, QBLOCK_ITEM, 86, 12)
     b.block_row(BRICK, 110, 12, 4).obj(T0, QBLOCK_COIN, 111, 12)
-    # Munten
+    # Coins
     for x, y, w in ((7, 19, 4), (26, 16, 5), (40, 13, 6), (54, 14, 4), (79, 16, 5),
                     (93, 12, 4), (106, 15, 4), (120, 19, 3), (18, 21, 2), (47, 21, 2),
                     (72, 21, 2), (99, 21, 2)):
         b.coins(x, y, w)
-    # Vijanden (alleen types uit de originele ijsstage)
+    # Enemies (only types from the original ice stage)
     b.sprite(149, 30, 22, bytes([0, 0, 1, 0, 0, 0])).sprite(149, 82, 22, bytes([0, 0, 1, 0, 0, 0]))
     b.sprite(149, 108, 21, bytes([0, 0, 3, 0, 0, 0]))
-    # Sterpunten
+    # Star spawn points
     for x, y in ((9, 19), (28, 16), (43, 13), (56, 9), (66, 18), (81, 16), (95, 12),
                  (108, 15), (121, 19)):
         b.star(x, y)
@@ -127,34 +125,34 @@ def ijsbaan(base):
     return b
 
 
-def buizenstelsel(base):
-    """Pijpenstage: plafond en zij-warppijpen van het origineel, nieuw middenveld
-    met pijpen van verschillende hoogte, zwevende noppenblokken en twee
-    piranhaplanten."""
+def pipeworks(base):
+    """Pipe stage: ceiling and side warp pipes from the original, a new middle
+    section with pipes of different heights, floating studded blocks and two
+    Piranha Plants."""
     keep = lambda o: (o.tileset == T0 and (o.num in (101, 54, 82, 2)
                       or (o.num == 53 and o.x in (0, 62) and o.y == 0)))
     b = StageBuilder(base, keep_objects=keep, keep_sprites=lambda s: s.type == 24)
-    # Alleen de spawnpunten (0,1) en de zij-warps (4,5) behouden
+    # Keep only the spawn points (0, 1) and the side warps (4, 5)
     b.lvl.entrances = [e for e in b.lvl.entrances if e.number in (0, 1, 4, 5)]
     GROUND = 53
-    # Vloer met twee gaten
+    # Floor with two gaps
     b.obj(T0, GROUND, 2, 25, 14, 2).obj(T0, GROUND, 19, 25, 26, 2).obj(T0, GROUND, 48, 25, 14, 2)
     b.obj(T0, STONE, 4, 24, 6, 1).obj(T0, STONE, 54, 24, 6, 1)
-    # Pijpen (breedte 2): (x, bovenkant)
+    # Pipes (2 wide): (x, top)
     pipes = [(12, 21), (21, 19), (27, 22), (31, 16), (35, 22), (41, 19), (50, 21)]
     for x, top in pipes:
         b.obj(T0, PIPE, x, top, 2, 25 - top)
     b.sprite(23, 31, 16).sprite(23, 21, 19)
-    # Zwevende noppenblokken en vraagtekenblokken
+    # Floating studded blocks and question blocks
     b.obj(T0, STONE, 6, 18, 4, 1).obj(T0, STONE, 54, 18, 4, 1)
     b.obj(T0, STONE, 14, 14, 3, 1).obj(T0, STONE, 47, 14, 3, 1)
     b.obj(T0, STONE, 24, 12, 4, 1).obj(T0, STONE, 36, 12, 4, 1)
     b.obj(T0, QBLOCK_ITEM, 7, 14).obj(T0, QBLOCK_ITEM, 56, 14).obj(T0, QBLOCK_COIN, 31, 10)
     b.obj(T0, QBLOCK_COIN, 32, 10)
-    # Munten
+    # Coins
     b.coins(17, 22, 2).coins(45, 22, 2).coins(24, 10, 4).coins(36, 10, 4)
     b.coins(14, 12, 3).coins(47, 12, 3).coins(31, 14, 2).coins(6, 16, 4).coins(54, 16, 4)
-    # Sterpunten
+    # Star spawn points
     for x, y in ((8, 16), (55, 16), (15, 12), (48, 12), (25, 10), (38, 10), (31, 8),
                  (28, 20), (36, 20)):
         b.star(x, y)
@@ -162,9 +160,9 @@ def buizenstelsel(base):
     return b
 
 
-def kantelen(base):
-    """Kasteel met vier torens van oplopende hoogte en een brug in het midden.
-    Plafond en hangende obstakels komen uit de originele kasteelstage."""
+def battlements(base):
+    """Castle with four towers of rising height and a bridge in the middle.
+    The ceiling and hanging obstacles come from the original castle stage."""
     keep_o = lambda o: (o.tileset == T1 and o.num in (94, 96) and o.y < 8) or _is(o, T0, 2)
     keep_s = lambda s: s.type in (195, 196) or (s.type == 298 and s.y == 6)
     b = StageBuilder(base, keep_objects=keep_o, keep_sprites=keep_s)
@@ -179,22 +177,22 @@ def kantelen(base):
     towers = [(6, 9, 15), (17, 21, 12), (42, 46, 12), (54, 57, 15)]
     for t in towers:
         tower(*t)
-    # Vloer tussen de torens
+    # Floor between the towers
     edges = [0] + [v for t in towers for v in (t[0], t[1] + 1)] + [64]
     for a, c in zip(edges[0::2], edges[1::2]):
         b.obj(T1, 25, a, FLOOR_Y, c - a, 1)
-    # Middenstuk: lage muur met brug erover
+    # Middle section: a low wall with a bridge above it
     tower(28, 35, 16)
-    b.obj(T0, 92, 22, 12, 20, 1)            # brug tussen de twee hoge torens
+    b.obj(T0, 92, 22, 12, 20, 1)            # bridge between the two tall towers
     b.obj(T0, BRICK, 30, 9, 4, 1).obj(T0, QBLOCK_ITEM, 31, 9).obj(T0, QBLOCK_ITEM, 32, 9)
     b.obj(T0, BRICK, 1, 12, 3, 1).obj(T0, BRICK, 60, 12, 3, 1)
     b.obj(T0, QBLOCK_COIN, 12, 11).obj(T0, QBLOCK_COIN, 51, 11)
-    # Munten
+    # Coins
     b.coins(7, 13, 2).coins(55, 13, 2).coins(18, 10, 3).coins(43, 10, 3)
     b.coins(25, 10, 2).coins(37, 10, 2).coins(11, 16, 4).coins(49, 16, 4).coins(30, 14, 4)
-    # Vijanden
+    # Enemies
     b.sprite(28, 13, 17).sprite(28, 50, 17)
-    # Sterpunten
+    # Star spawn points
     for x, y in ((7, 13), (56, 13), (19, 10), (44, 10), (31, 14), (32, 7), (2, 10),
                  (61, 10), (13, 16)):
         b.star(x, y)
@@ -203,16 +201,16 @@ def kantelen(base):
 
 
 # ===========================================================================
-# Pagina 3 en 4: experimentelere ontwerpen
+# Pages 3 and 4: more experimental designs
 # ===========================================================================
 
 def _mirror(x, w, W):
     return W - x - w
 
 
-def zweefeilanden(base):
-    """Geen grond: zwevende graseilanden boven een bodemloze lucht.
-    Hogere view (28 tegels) zodat er ruimte is om tussen eilanden te springen."""
+def sky_islands(base):
+    """No ground: floating grass islands above a bottomless sky.
+    Taller view (28 tiles) to leave room for jumping between islands."""
     b = StageBuilder(base, keep_objects=lambda o: _is(o, T0, 2))
     b.view_size(64, 28)
     k = STD_KIT
@@ -223,19 +221,19 @@ def zweefeilanden(base):
         b.box(x0, y0, x0 + w - 1, y0 + h - 1, k, bottom=True)
         m = _mirror(x0, w, W)
         b.box(m, y0, m + w - 1, y0 + h - 1, k, bottom=True)
-    b.box(24, 14, 39, 16, k, bottom=True)          # groot middeneiland
-    b.box(28, 4, 35, 5, k, bottom=True)            # topeiland
-    # Wrap-markeringen ter hoogte van de starteilanden
+    b.box(24, 14, 39, 16, k, bottom=True)          # large middle island
+    b.box(28, 4, 35, 5, k, bottom=True)            # top island
+    # Wrap markers at the height of the start islands
     b.sprite(195, 0, 22).sprite(196, 63, 22)
-    # Blokken
+    # Blocks
     b.block_row(BRICK, 29, 10, 6).obj(T0, QBLOCK_ITEM, 31, 10).obj(T0, QBLOCK_ITEM, 32, 10)
     b.obj(T0, QBLOCK_COIN, 6, 7).obj(T0, QBLOCK_COIN, 57, 7)
     b.block_row(BRICK, 14, 14, 3).block_row(BRICK, 47, 14, 3)
-    # Munten in bogen tussen de eilanden
+    # Coins in arcs between the islands
     for x, y in ((9, 20), (10, 19), (11, 18), (21, 15), (22, 14), (23, 13), (11, 9), (12, 8), (21, 5), (22, 4)):
         b.coins(x, y).coins(_mirror(x, 1, W), y)
     b.coins(30, 2, 4).coins(28, 22, 8)
-    # Vijanden op het middeneiland
+    # Enemies on the middle island
     b.sprite(148, 27, 13).sprite(148, 36, 13)
     for x, y in ((3, 20), (60, 20), (15, 16), (48, 16), (31, 12), (6, 9), (57, 9), (31, 2), (31, 22)):
         b.star(x, y)
@@ -243,8 +241,8 @@ def zweefeilanden(base):
     return b
 
 
-def trappenpiramide(base):
-    """Een reusachtige trappiramide in het midden met een blokkenkroon."""
+def step_pyramid(base):
+    """A giant step pyramid in the middle with a crown of blocks."""
     b = StageBuilder(base, keep_objects=lambda o: _is(o, T0, 2),
                      keep_sprites=lambda s: s.type in (195, 196))
     k = STD_KIT
@@ -252,22 +250,22 @@ def trappenpiramide(base):
     b.box(0, 15, 9, 17, k, open_left=True)
     b.box(54, 15, 63, 17, k, open_right=True)
     b.box(13, 17, 17, 17, k).box(46, 17, 50, 17, k)
-    # Treden van de piramide: (x0, x1, bovenkant)
+    # Pyramid steps: (x0, x1, top)
     for x0, x1, top in ((18, 21, 15), (22, 25, 12), (26, 29, 9), (30, 33, 6),
                         (34, 37, 9), (38, 41, 12), (42, 45, 15)):
         b.box(x0, top, x1, 17, k)
-    # Kroon van vraagtekenblokken boven de top
+    # Crown of question blocks above the top
     b.obj(T0, QBLOCK_ITEM, 31, 2).obj(T0, QBLOCK_ITEM, 32, 2)
     b.obj(T0, QBLOCK_COIN, 28, 4).obj(T0, QBLOCK_COIN, 35, 4)
-    # Zwevende stenen aan de zijkanten
+    # Floating bricks at the sides
     b.block_row(BRICK, 3, 11, 4).block_row(BRICK, 57, 11, 4)
     b.block_row(BRICK, 10, 8, 3).block_row(BRICK, 51, 8, 3)
     b.obj(T0, QBLOCK_ITEM, 11, 8).obj(T0, QBLOCK_ITEM, 52, 8)
-    # Munten op elke trede
+    # Coins on every step
     for x0, top in ((18, 15), (22, 12), (26, 9), (34, 9), (38, 12), (42, 15)):
         b.coins(x0 + 1, top - 2, 2)
     b.coins(4, 9, 2).coins(58, 9, 2).coins(14, 15, 3).coins(47, 15, 3)
-    # Een leger Goomba's op de treden
+    # An army of Goombas on the steps
     for x, y in ((20, 14), (24, 11), (39, 11), (43, 14), (15, 16), (48, 16)):
         b.sprite(148, x, y)
     for x, y in ((31, 4), (5, 9), (58, 9), (11, 6), (52, 6), (23, 10), (40, 10), (15, 15), (48, 15)):
@@ -276,24 +274,24 @@ def trappenpiramide(base):
     return b
 
 
-def doolhof(base):
-    """Doolhof van stenen met gangen op vier verdiepingen en verspringende openingen."""
+def labyrinth(base):
+    """Brick labyrinth with corridors on four floors and staggered openings."""
     b = StageBuilder(base, keep_sprites=lambda s: s.type in (195, 196, 80))
     W = 32
-    b.obj(T0, BRICK, 0, 20, W, 4)                 # vloer
-    # Horizontale muren met openingen die per verdieping verspringen
+    b.obj(T0, BRICK, 0, 20, W, 4)                 # floor
+    # Horizontal walls with openings that shift on every floor
     floors = {16: [(0, 6), (10, 12), (26, 6)], 12: [(3, 10), (19, 10)], 8: [(0, 4), (8, 16), (28, 4)],
               4: [(4, 8), (20, 8)]}
     for y, parts in floors.items():
         for x, w in parts:
             b.block_row(BRICK, x, y, w)
-    # Verticale tussenmuren
+    # Vertical dividing walls
     for x, y, h in ((7, 13, 3), (24, 13, 3), (15, 9, 3), (16, 9, 3), (2, 5, 3), (29, 5, 3)):
         b.obj(T0, BRICK, x, y, 1, h)
     b.obj(T0, QBLOCK_ITEM, 15, 16).obj(T0, QBLOCK_ITEM, 16, 16)
     b.obj(T0, BRICK_ITEM, 6, 8).obj(T0, BRICK_ITEM, 25, 8)
     b.obj(T0, QBLOCK_COIN, 11, 4).obj(T0, QBLOCK_COIN, 20, 4)
-    # Munten in de gangen
+    # Coins in the corridors
     b.coins(1, 18, 4).coins(27, 18, 4).coins(9, 14, 5).coins(18, 14, 5)
     b.coins(4, 10, 3).coins(25, 10, 3).coins(12, 6, 3).coins(17, 6, 3).coins(14, 2, 4)
     b.sprite(148, 12, 19).sprite(148, 19, 19).sprite(148, 5, 11).sprite(148, 26, 11)
@@ -303,20 +301,20 @@ def doolhof(base):
     return b
 
 
-def muntenkluis(base):
-    """Een kluis vol muntblokken in het midden; ingang alleen via het dak."""
+def coin_vault(base):
+    """A vault full of coin blocks in the middle; the only way in is through the roof."""
     b = StageBuilder(base, keep_sprites=lambda s: s.type in (195, 196, 80))
     W = 32
     COINBRICK = 45
     b.obj(T0, BRICK, 0, 20, 12, 4).obj(T0, BRICK, 20, 20, 12, 4)
-    b.obj(T0, BRICK, 12, 22, 8, 2)                # verlaagde vloer in de kluis
-    # Kluismuren
+    b.obj(T0, BRICK, 12, 22, 8, 2)                # lowered floor inside the vault
+    # Vault walls
     b.obj(T0, BRICK, 11, 9, 1, 11).obj(T0, BRICK, 20, 9, 1, 11)
-    b.block_row(BRICK, 11, 9, 3).block_row(BRICK, 18, 9, 3)   # dak met opening x14..17
-    # Inhoud van de kluis
+    b.block_row(BRICK, 11, 9, 3).block_row(BRICK, 18, 9, 3)   # roof with an opening at x14..17
+    # Vault contents
     b.obj(T0, COINBRICK, 13, 18, 6, 1).obj(T0, QBLOCK_ITEM, 15, 14).obj(T0, QBLOCK_ITEM, 16, 14)
     b.coins(13, 20, 6).coins(13, 12, 6)
-    # Trappen naar het dak aan beide kanten
+    # Stairs to the roof on both sides
     for i in range(4):
         b.block_row(BRICK, 6 - i, 17 - 2 * i, 3).block_row(BRICK, _mirror(6 - i, 3, W), 17 - 2 * i, 3)
     b.block_row(BRICK, 0, 6, 4).block_row(BRICK, 28, 6, 4)
@@ -329,9 +327,9 @@ def muntenkluis(base):
     return b
 
 
-def glijbaan(base):
-    """Twee enorme trappen die naar een ijsvallei afdalen. Wie te hard glijdt,
-    belandt in het gat onder de smalle ijsbrug."""
+def ice_slide(base):
+    """Two huge staircases that descend into an icy valley. Slide too fast and
+    you drop through the gap next to the narrow ice bridge."""
     b = StageBuilder(base, keep_objects=lambda o: _is(o, T0, 2),
                      keep_sprites=lambda s: s.type in (195, 196))
     k = STD_KIT
@@ -343,13 +341,13 @@ def glijbaan(base):
         m0 = _mirror(x0, x1 - x0 + 1, W)
         b.box(m0, top, m0 + x1 - x0, 27, k, open_right=(x1 == 7))
     b.box(48, 25, 59, 27, k).box(68, 25, 79, 27, k)
-    b.obj(T1, ICE, 61, 25, 6, 1)                 # smalle ijsbrug, met een gat aan elke kant
-    # IJs op elke trede zodat je doorglijdt
+    b.obj(T1, ICE, 61, 25, 6, 1)                 # narrow ice bridge with a gap on each side
+    # Ice on every step so you keep sliding
     for x0, x1, top in steps[1:]:
         b.obj(T1, ICE, x0, top, x1 - x0 + 1, 1)
         m0 = _mirror(x0, x1 - x0 + 1, W)
         b.obj(T1, ICE, m0, top, x1 - x0 + 1, 1)
-    # Zwevende platforms boven de vallei
+    # Floating platforms above the valley
     for x, y, w in ((52, 19, 5), (71, 19, 5), (60, 14, 8), (56, 9, 4), (68, 9, 4)):
         b.obj(T1, ICE, x, y, w, 1)
     b.block_row(BRICK, 61, 4, 6).obj(T0, QBLOCK_ITEM, 63, 4).obj(T0, QBLOCK_ITEM, 64, 4)
@@ -363,8 +361,8 @@ def glijbaan(base):
     return b
 
 
-def bevrorenmeer(base):
-    """Een volledig bevroren meer: alles is glad ijs, met sneeuwrotsen als obstakels."""
+def frozen_lake(base):
+    """A completely frozen lake: everything is slippery ice, with snow rocks as obstacles."""
     b = StageBuilder(base, keep_objects=lambda o: _is(o, T0, 2),
                      keep_sprites=lambda s: s.type in (195, 196))
     k = STD_KIT
@@ -390,8 +388,8 @@ def bevrorenmeer(base):
     return b
 
 
-def pijpenorgel(base):
-    """Rijen pijpen waarvan de hoogtes een golf vormen, als de pijpen van een orgel."""
+def pipe_organ(base):
+    """Rows of pipes whose heights form a wave, like the pipes of an organ."""
     import math
     keep = lambda o: (o.tileset == T0 and (o.num in (101, 54, 82, 2)
                       or (o.num == 53 and o.x in (0, 62) and o.y == 0)))
@@ -405,7 +403,7 @@ def pijpenorgel(base):
         b.obj(T0, PIPE, x, top, 2, 25 - top)
         if i % 2 == 0:
             b.coins(x, top - 2, 2)
-    # Piranhaplanten in de twee laagste pijpen
+    # Piranha Plants in the two lowest pipes
     lows = sorted(tops, key=lambda t: -t[1])[:2]
     for x, top in lows:
         b.sprite(23, x, top)
@@ -422,22 +420,22 @@ def pijpenorgel(base):
     return b
 
 
-def riool(base):
-    """Twee verdiepingen: een lage rioolbuis onderin en een stenen loopbrug erboven,
-    verbonden door gaten in de brug."""
+def sewer(base):
+    """Two floors: a low sewer tunnel at the bottom and a stone walkway above it,
+    connected by gaps in the walkway."""
     keep = lambda o: (o.tileset == T0 and (o.num in (101, 54, 82, 2)
                       or (o.num == 53 and o.x in (0, 62) and o.y == 0)))
     b = StageBuilder(base, keep_objects=keep, keep_sprites=lambda s: s.type == 24)
     b.lvl.entrances = [e for e in b.lvl.entrances if e.number in (0, 1, 4, 5)]
     b.obj(T0, 53, 2, 25, 60, 2)
-    # Loopbrug van noppenblokken met drie gaten
+    # Walkway of studded blocks with three gaps
     for x, w in ((4, 12), (19, 10), (33, 12), (48, 12)):
         b.obj(T0, STONE, x, 17, w, 1)
-    # Korte pijpen in de buis onderin
+    # Short pipes in the tunnel below
     for x, top in ((10, 22), (24, 23), (38, 23), (52, 22)):
         b.obj(T0, PIPE, x, top, 2, 25 - top)
     b.sprite(23, 24, 23).sprite(23, 38, 23)
-    # Bovenverdieping
+    # Upper floor
     b.obj(T0, PIPE, 30, 13, 2, 4)
     b.obj(T0, STONE, 8, 12, 4, 1).obj(T0, STONE, 50, 12, 4, 1).obj(T0, STONE, 26, 9, 10, 1)
     b.obj(T0, QBLOCK_ITEM, 30, 9).obj(T0, QBLOCK_ITEM, 31, 9)
@@ -450,8 +448,8 @@ def riool(base):
     return b
 
 
-def kerker(base):
-    """Lage kerker vol korte pilaren en oranje loopbruggen op twee hoogtes."""
+def dungeon(base):
+    """Low dungeon full of short pillars and walkways at two heights."""
     keep_o = lambda o: (o.tileset == T1 and o.num in (94, 96) and o.y < 8) or _is(o, T0, 2)
     keep_s = lambda s: s.type in (195, 196) or (s.type == 298 and s.y == 6)
     b = StageBuilder(base, keep_objects=keep_o, keep_sprites=keep_s)
@@ -471,7 +469,7 @@ def kerker(base):
     for a, c in zip(edges[0::2], edges[1::2]):
         if c > a:
             b.obj(T1, 25, a, FLOOR_Y, c - a, 1)
-    # Bruggen op twee hoogtes
+    # Bridges at two heights
     for x, w in ((8, 5), (24, 5), (35, 5), (51, 5)):
         b.obj(T0, 92, x, 13, w, 1)
     for x, w in ((14, 15), (35, 15)):
@@ -487,9 +485,9 @@ def kerker(base):
     return b
 
 
-def torenspits(base):
-    """Kasteel zonder plafond: een hoge middentoren met zijtorens en bruggen.
-    Experimentele, hogere view van 28 tegels."""
+def spire(base):
+    """Castle without a ceiling: a tall central tower with side towers and bridges.
+    Experimental taller view of 28 tiles."""
     keep_o = lambda o: _is(o, T0, 2) and o.y > 30
     b = StageBuilder(base, keep_objects=keep_o, keep_sprites=lambda s: s.type in (195, 196))
     b.view_size(64, 28)
