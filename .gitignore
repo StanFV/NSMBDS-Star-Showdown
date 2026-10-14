@@ -1,0 +1,7 @@
+# Nooit ROM-bestanden of afgeleide builds committen
+*.nds
+*.sav
+*.dsv
+*.xdelta
+out/
+__pycache__/
