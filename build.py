@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Bouwt NSMB DS Versus uit een eigen, legaal verkregen Europese ROM.
+"""Bouwt Star Showdown (Mario vs Luigi rom hack) uit een eigen, legaal verkregen Europese ROM.
 
 Gebruik:
     python3 build.py "New Super Mario Bros. (Europe) (En,Fr,De,Es,It).nds"
 
 Uitvoer:
-    out/NSMB-DS-Versus.nds          de gepatchte ROM
-    out/NSMB-DS-Versus.xdelta       xdelta3-patch (alleen als xdelta3 beschikbaar is)
+    out/StarShowdown.nds            de gepatchte ROM
+    out/StarShowdown.xdelta         xdelta3-patch (alleen als xdelta3 beschikbaar is)
     out/previews/*.png              previews van de nieuwe stages
 """
 import argparse
@@ -29,6 +29,7 @@ from PIL import Image
 
 import codepatch
 from bmg import BMG
+from banner import set_banner
 import stages
 from nsmbgfx import LevelRenderer
 from nsmblevel import Level
@@ -291,13 +292,15 @@ def main():
         log(f'{removed / 1e6:.1f} MB aan story-bestanden verwijderd')
 
     # ---- 5. opslaan ---------------------------------------------------------
-    rom.name = bytearray(b'NSMB VERSUS')
-    out_rom = os.path.join(args.out, 'NSMB-DS-Versus.nds')
+    rom.name = bytearray(b'STARSHOWDOWN')
+    rom.iconBanner = set_banner(rom.iconBanner, 'Star Showdown\nMario vs Luigi rom hack\n20 arenas',
+                                Image.open(os.path.join(HERE, 'docs', 'icon.png')))
+    out_rom = os.path.join(args.out, 'StarShowdown.nds')
     rom.saveToFile(out_rom)
     print(f'Klaar: {out_rom} ({os.path.getsize(out_rom) / 1e6:.1f} MB)')
 
     if shutil.which('xdelta3'):
-        patch = os.path.join(args.out, 'NSMB-DS-Versus.xdelta')
+        patch = os.path.join(args.out, 'StarShowdown.xdelta')
         if os.path.exists(patch):
             os.remove(patch)
         subprocess.run(['xdelta3', '-e', '-9', '-S', 'djw', '-s', args.rom, out_rom, patch], check=True)
