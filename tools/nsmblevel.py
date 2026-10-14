@@ -1,13 +1,13 @@
-"""Lezen en schrijven van NSMB DS levelbestanden (course/*.bin + *_bgdat.bin).
+"""Reading and writing NSMB DS level files (course/*.bin + *_bgdat.bin).
 
-Formaat gebaseerd op NSMB Editor (Dirbaio e.a., GPLv3) en eigen analyse.
-Een .bin bestaat uit 14 blokken met een header van 14 x (offset, grootte).
+Format based on NSMB Editor (Dirbaio et al., GPLv3) and our own analysis.
+A .bin consists of 14 blocks with a header of 14 x (offset, size).
 """
 import struct
 from dataclasses import dataclass, field
 
 BLOCK_COUNT = 14
-# Blokindeling
+# Block layout
 B_SETTINGS, B_CAMERA, B_BG_BOTTOM, B_BG_TOP, B_BG_EXTRA, B_ENTRANCES, B_SPRITES, \
     B_VIEWS, B_ZONES, B_PROGPATHS, B_PATHS, B_PROGNODES, B_PATHNODES, B_SPRITESETS = range(14)
 
@@ -30,7 +30,7 @@ class Sprite:
     type: int
     x: int
     y: int
-    data: bytes  # 6 bytes zoals in het bestand (ruwe volgorde)
+    data: bytes  # 6 bytes as stored in the file (raw order)
 
     def pack(self):
         return struct.pack('<HHH', self.type, self.x, self.y) + bytes(self.data)
@@ -148,7 +148,7 @@ class Level:
         bg = b''.join(o.pack() for o in self.objects) + b'\xff\xff'
         return bytes(out), bytes(bg)
 
-    # handige accessors
+    # convenience accessors
     @property
     def tileset_id(self):
         return self.blocks[B_SETTINGS][0x0C]

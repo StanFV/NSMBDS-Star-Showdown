@@ -1,4 +1,4 @@
-"""Past de banner aan die het DS-menu toont (titel en 32x32 icoon)."""
+"""Updates the banner shown in the DS menu (title and 32x32 icon)."""
 import struct
 from PIL import Image
 
@@ -14,9 +14,9 @@ def crc16(data):
 
 def set_banner(banner: bytes, title: str, icon: Image.Image = None) -> bytes:
     b = bytearray(banner)
-    assert struct.unpack_from('<H', b, 2)[0] == crc16(b[0x20:0x840]), 'onbekend bannerformaat'
+    assert struct.unpack_from('<H', b, 2)[0] == crc16(b[0x20:0x840]), 'unknown banner format'
     enc = title.encode('utf-16-le')
-    assert len(enc) <= 0xFE, 'titel te lang'
+    assert len(enc) <= 0xFE, 'title too long'
     for lang in range(6):
         off = 0x240 + lang * 0x100
         b[off:off + 0x100] = enc.ljust(0x100, b'\0')

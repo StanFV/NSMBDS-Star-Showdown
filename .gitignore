@@ -1,4 +1,4 @@
-# Nooit ROM-bestanden of afgeleide builds committen
+# Never commit ROM files or builds derived from them
 *.nds
 *.sav
 *.dsv

@@ -3,214 +3,209 @@
 </p>
 
 <p align="center">
-  <b>Een Mario vs Luigi rom hack voor New Super Mario Bros. (DS, Europese versie)</b><br>
-  20 arena's &middot; geen story mode &middot; ROM van 33,5 MB naar 18 MB
+  <b>A Mario vs Luigi rom hack for New Super Mario Bros. (DS, European version)</b><br>
+  20 arenas &middot; no story mode &middot; ROM shrunk from 33.5 MB to 18 MB
 </p>
 
 ---
 
-**Star Showdown** draait helemaal om de Mario vs Luigi modus. Bovenop de vijf originele stages komen vijftien nieuwe arena's, verdeeld over vier pagina's in het stagekeuzemenu. De story mode is eruit gehaald, waardoor de ROM bijna de helft kleiner is.
+**Star Showdown** is all about the Mario vs Luigi mode. On top of the five original stages there are fifteen new arenas, spread over four pages in the stage select menu. The story mode has been removed, which makes the ROM almost half the size.
 
-Deze repository bevat geen ROM. Het bouwscript past alle wijzigingen toe op je eigen, legaal verkregen ROM.
+This repository does not contain a ROM. The build script applies all changes to your own, legally obtained ROM.
 
-<p align="center">
-  <img src="docs/stagekeuze.png" alt="Stagekeuzemenu met pagina's" width="640"><br>
-  <i>Het stagekeuzemenu op de host (links) en de tweede speler (rechts). R bladert naar de volgende pagina, L terug.</i>
-</p>
-
-## In het kort
+## At a glance
 
 | | |
 |---|---|
-| **Stages** | 20: de 5 originele plus 15 nieuwe |
-| **Bladeren** | R volgende pagina, L vorige pagina; de thumbnails wisselen mee |
-| **Course: Random** | kiest uit alle 20 stages |
-| **Titelmenu** | "Mario Game" start ook Mario vs Luigi; Minigames en Options werken gewoon |
-| **ROM-grootte** | 18 MB in plaats van 33,5 MB |
-| **Versie** | alleen de Europese ROM (En, Fr, De, Es, It) |
+| **Stages** | 20: the 5 originals plus 15 new ones |
+| **Pages** | R goes to the next page, L to the previous one; the thumbnails change along |
+| **Course: Random** | picks from all 20 stages |
+| **Title menu** | "Mario Game" also starts Mario vs Luigi; Minigames and Options work as usual |
+| **ROM size** | 18 MB instead of 33.5 MB |
+| **Version** | European ROM only (En, Fr, De, Es, It) |
 
-Elke plek op een pagina hoort bij een thema: plek 1 is gras, 2 ondergronds, 3 ijs, 4 pijpen en 5 kasteel. Zo gebruikt een nieuwe stage altijd de tileset, achtergrond en vijanden die de game voor dat thema klaarzet.
+Every slot on a page belongs to a theme: slot 1 is grass, 2 underground, 3 ice, 4 pipes and 5 castle. This way a new stage always uses the tileset, background and enemies that the game prepares for that theme.
 
-## De nieuwe stages
+## The new stages
 
-Alle screenshots komen uit een echte 2-speler wedstrijd: links het scherm van Mario, rechts dat van Luigi. Onder elke stage staat een kaart van het hele level.
+All screenshots come from a real two-player match: Mario's screen on the left, Luigi's on the right. Below every stage you can expand a map of the whole level.
 
-### Pagina 2
+### Page 2
 
-#### Heuvelrug
-Een hoge centrale heuvel met verhoogde uiteinden en drie afgronden. De zwevende blokken zijn een springplank naar de sterren.
+#### Hilltop
+A tall central hill with raised ends and three pits. The floating blocks are a stepping stone to the stars.
 
-<img src="docs/stages/heuvelrug.png" alt="Heuvelrug" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/heuvelrug.png" alt="Kaart van Heuvelrug"></details>
+<img src="docs/stages/hilltop.png" alt="Hilltop" width="640">
+<details><summary>Map</summary><img src="docs/maps/hilltop.png" alt="Map of Hilltop"></details>
 
-#### Steengroeve
-Een symmetrische grot met richels op vijf hoogtes en een stenen verhoging in het midden.
+#### Quarry
+A symmetrical cave with ledges at five heights and a raised stone section in the middle.
 
-<img src="docs/stages/steengroeve.png" alt="Steengroeve" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/steengroeve.png" alt="Kaart van Steengroeve"></details>
+<img src="docs/stages/quarry.png" alt="Quarry" width="640">
+<details><summary>Map</summary><img src="docs/maps/quarry.png" alt="Map of Quarry"></details>
 
-#### IJsbaan
-Een brede sneeuwvlakte met ijsplatforms, hoogteverschillen en drie afgronden.
+#### Snowfield
+A wide snowfield with ice platforms, height differences and three pits.
 
-<img src="docs/stages/ijsbaan.png" alt="IJsbaan" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/ijsbaan.png" alt="Kaart van IJsbaan"></details>
+<img src="docs/stages/snowfield.png" alt="Snowfield" width="640">
+<details><summary>Map</summary><img src="docs/maps/snowfield.png" alt="Map of Snowfield"></details>
 
-#### Buizenstelsel
-Pijpen van verschillende hoogte met piranhaplanten. De warppijpen aan de zijkanten van het origineel zijn gebleven.
+#### Pipeworks
+Pipes of different heights with Piranha Plants. The side warp pipes from the original stage are still there.
 
-<img src="docs/stages/buizenstelsel.png" alt="Buizenstelsel" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/buizenstelsel.png" alt="Kaart van Buizenstelsel"></details>
+<img src="docs/stages/pipeworks.png" alt="Pipeworks" width="640">
+<details><summary>Map</summary><img src="docs/maps/pipeworks.png" alt="Map of Pipeworks"></details>
 
-#### Kantelen
-Vier torens van oplopende hoogte en een lange brug boven een lage middenmuur.
+#### Battlements
+Four towers of rising height and a long bridge above a low middle wall.
 
-<img src="docs/stages/kantelen.png" alt="Kantelen" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/kantelen.png" alt="Kaart van Kantelen"></details>
+<img src="docs/stages/battlements.png" alt="Battlements" width="640">
+<details><summary>Map</summary><img src="docs/maps/battlements.png" alt="Map of Battlements"></details>
 
-### Pagina 3
+### Page 3
 
-#### Zweefeilanden
-Er is geen grond: alleen graseilanden boven het niets. Deze stage heeft een hogere camera dan de originele arena's.
+#### Sky Islands
+There is no ground: only grass islands floating above nothing. This stage has a taller camera than the original arenas.
 
-<img src="docs/stages/zweefeilanden.png" alt="Zweefeilanden" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/zweefeilanden.png" alt="Kaart van Zweefeilanden"></details>
+<img src="docs/stages/sky_islands.png" alt="Sky Islands" width="640">
+<details><summary>Map</summary><img src="docs/maps/sky_islands.png" alt="Map of Sky Islands"></details>
 
-#### Doolhof
-Gangen op vier verdiepingen. De openingen verspringen per verdieping, dus de kortste weg is nooit recht omhoog.
+#### Labyrinth
+Corridors on four floors. The openings shift on every floor, so the shortest way up is never straight up.
 
-<img src="docs/stages/doolhof.png" alt="Doolhof" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/doolhof.png" alt="Kaart van Doolhof"></details>
+<img src="docs/stages/labyrinth.png" alt="Labyrinth" width="640">
+<details><summary>Map</summary><img src="docs/maps/labyrinth.png" alt="Map of Labyrinth"></details>
 
-#### Glijbaan
-Twee ijstrappen glijden af naar een vallei. Wie te hard doorglijdt, valt naast de smalle ijsbrug.
+#### Ice Slide
+Two icy staircases slide down into a valley. Slide too fast and you drop through the gap next to the narrow ice bridge.
 
-<img src="docs/stages/glijbaan.png" alt="Glijbaan" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/glijbaan.png" alt="Kaart van Glijbaan"></details>
+<img src="docs/stages/ice_slide.png" alt="Ice Slide" width="640">
+<details><summary>Map</summary><img src="docs/maps/ice_slide.png" alt="Map of Ice Slide"></details>
 
-#### Pijpenorgel
-Rijen pijpen waarvan de hoogtes samen een golf vormen, met piranhaplanten in de laagste pijpen.
+#### Pipe Organ
+Rows of pipes whose heights form a wave, with Piranha Plants in the lowest pipes.
 
-<img src="docs/stages/pijpenorgel.png" alt="Pijpenorgel" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/pijpenorgel.png" alt="Kaart van Pijpenorgel"></details>
+<img src="docs/stages/pipe_organ.png" alt="Pipe Organ" width="640">
+<details><summary>Map</summary><img src="docs/maps/pipe_organ.png" alt="Map of Pipe Organ"></details>
 
-#### Kerker
-Een lage kerker met korte pilaren en bruggen op twee hoogtes.
+#### Dungeon
+A low dungeon with short pillars and bridges at two heights.
 
-<img src="docs/stages/kerker.png" alt="Kerker" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/kerker.png" alt="Kaart van Kerker"></details>
+<img src="docs/stages/dungeon.png" alt="Dungeon" width="640">
+<details><summary>Map</summary><img src="docs/maps/dungeon.png" alt="Map of Dungeon"></details>
 
-### Pagina 4
+### Page 4
 
-#### Trappenpiramide
-Een reusachtige trappiramide met een kroon van vraagtekenblokken en een leger Goomba's op de treden.
+#### Step Pyramid
+A giant step pyramid with a crown of question blocks and an army of Goombas on its steps.
 
-<img src="docs/stages/trappenpiramide.png" alt="Trappenpiramide" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/trappenpiramide.png" alt="Kaart van Trappenpiramide"></details>
+<img src="docs/stages/step_pyramid.png" alt="Step Pyramid" width="640">
+<details><summary>Map</summary><img src="docs/maps/step_pyramid.png" alt="Map of Step Pyramid"></details>
 
-#### Muntenkluis
-Een kluis vol munten in het midden. Je komt er alleen in via het dak.
+#### Coin Vault
+A vault full of coins in the middle. The only way in is through the roof.
 
-<img src="docs/stages/muntenkluis.png" alt="Muntenkluis" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/muntenkluis.png" alt="Kaart van Muntenkluis"></details>
+<img src="docs/stages/coin_vault.png" alt="Coin Vault" width="640">
+<details><summary>Map</summary><img src="docs/maps/coin_vault.png" alt="Map of Coin Vault"></details>
 
-#### Bevroren meer
-De hele vloer is glad ijs, met sneeuwrotsen als obstakels.
+#### Frozen Lake
+The whole floor is slippery ice, with snow rocks as obstacles.
 
-<img src="docs/stages/bevrorenmeer.png" alt="Bevroren meer" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/bevrorenmeer.png" alt="Kaart van Bevroren meer"></details>
+<img src="docs/stages/frozen_lake.png" alt="Frozen Lake" width="640">
+<details><summary>Map</summary><img src="docs/maps/frozen_lake.png" alt="Map of Frozen Lake"></details>
 
-#### Riool
-Twee verdiepingen: een lage buis met piranhaplanten onderin en een loopbrug van noppenblokken erboven.
+#### Sewer
+Two floors: a low tunnel with Piranha Plants at the bottom and a walkway of studded blocks above it.
 
-<img src="docs/stages/riool.png" alt="Riool" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/riool.png" alt="Kaart van Riool"></details>
+<img src="docs/stages/sewer.png" alt="Sewer" width="640">
+<details><summary>Map</summary><img src="docs/maps/sewer.png" alt="Map of Sewer"></details>
 
-#### Torenspits
-Een kasteel zonder plafond, met een hoge middentoren, zijtorens en bruggen. Ook deze stage heeft een hogere camera.
+#### Spire
+A castle without a ceiling, with a tall central tower, side towers and bridges. This stage also has a taller camera.
 
-<img src="docs/stages/torenspits.png" alt="Torenspits" width="640">
-<details><summary>Kaart</summary><img src="docs/maps/torenspits.png" alt="Kaart van Torenspits"></details>
+<img src="docs/stages/spire.png" alt="Spire" width="640">
+<details><summary>Map</summary><img src="docs/maps/spire.png" alt="Map of Spire"></details>
 
-## Bouwen
+## Building
 
-Je hebt nodig:
+You need:
 
-* Python 3.10 of nieuwer
-* de Europese ROM `New Super Mario Bros. (Europe) (En,Fr,De,Es,It).nds` (SHA-1 `b0f7886720e842ed922569e1bb5c39c0fa090331`)
-* optioneel `xdelta3` om ook een patchbestand te maken
+* Python 3.10 or newer
+* the European ROM `New Super Mario Bros. (Europe) (En,Fr,De,Es,It).nds` (SHA-1 `b0f7886720e842ed922569e1bb5c39c0fa090331`)
+* optionally `xdelta3` to also create a patch file
 
 ```bash
 pip install -r requirements.txt
 python3 build.py "New Super Mario Bros. (Europe) (En,Fr,De,Es,It).nds"
 ```
 
-Het resultaat komt in `out/`. Daar staan `StarShowdown.nds` (de ROM), `StarShowdown.xdelta` (een patch om te delen, alleen als xdelta3 geinstalleerd is) en de map `previews/` met een kaart per stage en de thumbnails.
+The result ends up in `out/`: `StarShowdown.nds` (the ROM), `StarShowdown.xdelta` (a patch to share, only if xdelta3 is installed) and the folder `previews/` with a map of every stage and the thumbnails.
 
-Met `--keep-story` blijft de story mode staan; dan worden alleen de nieuwe stages toegevoegd.
+With `--keep-story` the story mode stays in; only the new stages are added.
 
-### Een patch toepassen
+### Applying a patch
 
-Heb je alleen `StarShowdown.xdelta`? Pas die toe op de originele Europese ROM, bijvoorbeeld met `xdelta3 -d -s origineel.nds StarShowdown.xdelta StarShowdown.nds` of met een programma als Delta Patcher.
+Only have `StarShowdown.xdelta`? Apply it to the original European ROM, for example with `xdelta3 -d -s original.nds StarShowdown.xdelta StarShowdown.nds` or with a tool such as Delta Patcher.
 
-## Spelen
+## Playing
 
-Mario vs Luigi heeft twee DS-systemen nodig. Op een emulator gaat dat met melonDS: kies in het eerste venster *System → Multiplayer → Launch new instance* en laad de ROM ook in het tweede venster. Kies in beide "Mario Vs. Luigi" en daarna "Compete with another New Super Mario Bros. owner". De host kiest de stage en bladert met L en R door de pagina's.
+Mario vs Luigi needs two DS systems. On an emulator you can use melonDS: in the first window choose *System → Multiplayer → Launch new instance* and load the ROM in the second window as well. Pick "Mario Vs. Luigi" in both and then "Compete with another New Super Mario Bros. owner". The host chooses the stage and uses L and R to flip through the pages.
 
-## Zelf stages toevoegen
+## Adding your own stages
 
-Een stage is een Python-functie in `levels/stages.py` die een `StageBuilder` teruggeeft. Voeg de functie toe aan `PAGES` in `build.py`: vijf stages per pagina, maximaal vijf pagina's. De plek op de pagina bepaalt het thema. Er is dus nog ruimte voor een vijfde pagina.
+A stage is a Python function in `levels/stages.py` that returns a `StageBuilder`. Add the function to `PAGES` in `build.py`: five stages per page, at most five pages. The slot on the page decides the theme. There is still room for a fifth page.
 
-Tijdens het ontwerpen helpt de renderer in `tools/nsmbgfx.py`: `build.py` schrijft van elke stage een kaart naar `out/previews/`.
+The renderer in `tools/nsmbgfx.py` helps while designing: `build.py` writes a map of every stage to `out/previews/`.
 
-## Hoe het werkt
+## How it works
 
-In VS-modus laadt de game stages niet uit de gewone mappen maar uit een archief per thema (`ARCHIVE/Dat_Field.narc`, `Dat_Basement`, `Dat_Ice`, `Dat_Pipe` en `Dat_Fort`). Zo'n archief bevat de tileset, de achtergrond en de levelbestanden. De nieuwe stages worden aan het archief van hun thema toegevoegd, zodat tileset en vijanden altijd beschikbaar zijn.
+In VS mode the game does not load stages from the regular folders but from one archive per theme (`ARCHIVE/Dat_Field.narc`, `Dat_Basement`, `Dat_Ice`, `Dat_Pipe` and `Dat_Fort`). Such an archive holds the tileset, the background and the level files. The new stages are added to the archive of their theme, so the tileset and enemies are always available.
 
-De code-aanpassingen (Europese versie):
+The code changes (European version):
 
-| Adres | Wat |
+| Address | What |
 |---|---|
-| `0x0219A100` | extra autoload-sectie van de ARM9 met eigen code, de paginavariabele, de bestandstabellen en de thumbnails van alle pagina's; de heap begint daardoor iets later (literal op `0x02055EF8`) |
-| `0x02029D54` | tabel met archieven; de bovengrens van de vijf stage-archieven is verhoogd |
-| ov052 `0x02160E54` | einde van `getStage()`: schrijft de bestands-ID's van de gekozen pagina in de coursetabel (`0x0202C8C4` en `0x0202C5DC`) |
-| ov052 `0x02161B30` | update van het stagekeuzescherm: R en L bladeren door de pagina's en de thumbnails worden in VRAM bijgewerkt |
-| ov052 `0x02161FAC` en `0x02161FC4` | Random kiest uit alle pagina's in plaats van vijf stages |
-| ov009 `0x020E5148` | knop "Mario Game" springt naar Mario vs Luigi |
-| `menu_title_E??.narc` bericht 12 | hinttekst voor L/R in vijf talen |
-| banner | titel "Star Showdown" en een eigen icoon in het DS-menu |
+| `0x0219A100` | extra ARM9 autoload section with our own code, the page variable, the file tables and the thumbnails of all pages; the heap starts a little later because of it (literal at `0x02055EF8`) |
+| `0x02029D54` | archive table; the upper bound of the five stage archives is raised |
+| ov052 `0x02160E54` | end of `getStage()`: writes the file IDs of the chosen page into the course table (`0x0202C8C4` and `0x0202C5DC`) |
+| ov052 `0x02161B30` | stage select update: R and L flip through the pages and the thumbnails are updated in VRAM |
+| ov052 `0x02161FAC` and `0x02161FC4` | Random picks from all pages instead of five stages |
+| ov009 `0x020E5148` | the "Mario Game" button jumps to Mario vs Luigi |
+| `menu_title_E??.narc` message 12 | L/R hint text in five languages |
+| banner | the title "Star Showdown" and a custom icon in the DS menu |
 
-De invoer in het stagekeuzemenu wordt tussen beide DS-systemen gesynchroniseerd, net als de toevalsgenerator. Daardoor komen beide spelers altijd in dezelfde stage terecht.
+The input in the stage select menu is synchronised between both DS systems, just like the random number generator. That is why both players always end up in the same stage.
 
-### Mappen
+### Files
 
-| Pad | Inhoud |
+| Path | Contents |
 |---|---|
-| `build.py` | bouwt de ROM en de patch |
-| `levels/stages.py` | de ontwerpen van alle nieuwe stages als Python-code |
-| `tools/nsmblevel.py` | lezen en schrijven van het levelformaat |
-| `tools/nsmbgfx.py` | renderer voor kaarten en thumbnails |
-| `tools/stagebuilder.py` | hulpfuncties voor het ontwerpen |
-| `tools/codepatch.py` | ARM-assembly en code-patches |
-| `tools/bmg.py` | bewerken van berichtbestanden |
-| `tools/banner.py` | titel en icoon in het DS-menu |
-| `tools/make_logo.py` | tekent het logo en het icoon |
-| `docs/` | logo, screenshots en kaarten voor deze README |
+| `build.py` | builds the ROM and the patch |
+| `levels/stages.py` | the designs of all new stages as Python code |
+| `tools/nsmblevel.py` | reading and writing the level format |
+| `tools/nsmbgfx.py` | renderer for maps and thumbnails |
+| `tools/stagebuilder.py` | helpers for designing stages |
+| `tools/codepatch.py` | ARM assembly and code patches |
+| `tools/bmg.py` | editing message files |
+| `tools/banner.py` | title and icon in the DS menu |
+| `tools/make_logo.py` | draws the logo and the icon |
+| `docs/` | logo, screenshots and maps for this README |
 
-## Getest
+## Tested
 
-Alle vijftien nieuwe stages zijn gespeeld in een echte 2-speler sessie met twee melonDS-instanties (lokale draadloze verbinding), inclusief bladeren en Random. In DeSmuME zijn de stages ook in single-player gecontroleerd op tegels, vijanden en blokken. Titelmenu, Minigames en Options werken na het verwijderen van de story mode.
+All fifteen new stages were played in a real two-player session with two melonDS instances (local wireless), including flipping pages and Random. The stages were also checked in single player in DeSmuME for tiles, enemies and blocks. The title menu, Minigames and Options work after removing the story mode.
 
-Nog niet getest zijn echte hardware en DS Download Play (spelen met iemand zonder cartridge). De nieuwe stages staan in dezelfde archieven die Download Play gebruikt, dus het zou moeten werken.
+Not tested yet: real hardware and DS Download Play (playing with someone who does not have the cartridge). The new stages are in the same archives that Download Play uses, so it should work.
 
-## Bekende beperkingen
+## Known limitations
 
-* Op de knop in het titelmenu staat nog "Mario Game".
-* Het "Ready!"-scherm en het uitslagscherm tonen de naam en afbeelding van de originele stage op dezelfde plek.
-* Nieuwe thema's (zoals woestijn of lava) zijn niet mogelijk zonder extra archieven met tilesets en achtergronden.
-* Alleen de Europese versie wordt ondersteund.
+* The title menu button still says "Mario Game".
+* The "Ready!" screen and the results screen show the name and picture of the original stage in the same slot.
+* New themes (such as desert or lava) are not possible without extra archives with tilesets and backgrounds.
+* Only the European version is supported.
 
-## Dank en licenties
+## Credits and licences
 
-Het levelformaat is gebaseerd op het werk van NSMB Editor (Dirbaio en anderen) en de NSMB Code Reference van het Mamma Mia Team. Het logo gebruikt het lettertype Lilita One (SIL Open Font License).
+The level format is based on the work of NSMB Editor (Dirbaio and others) and the NSMB Code Reference by the Mamma Mia Team. The logo uses the Lilita One font (SIL Open Font License).
 
-New Super Mario Bros., Mario en Luigi zijn handelsmerken van Nintendo. Star Showdown is een fanproject zonder banden met Nintendo. De screenshots en kaarten in `docs/` tonen de gemodde game; gebruik de hack alleen met een eigen exemplaar van het spel.
+New Super Mario Bros., Mario and Luigi are trademarks of Nintendo. Star Showdown is a fan project that is not affiliated with Nintendo. The screenshots and maps in `docs/` show the modded game; only use the hack with your own copy of the game.

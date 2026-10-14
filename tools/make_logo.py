@@ -1,6 +1,6 @@
-"""Tekent het logo van Star Showdown (eigen ontwerp, lettertype Lilita One, OFL).
+"""Draws the Star Showdown logo (original design, font Lilita One, OFL).
 
-Gebruik: python3 tools/make_logo.py pad/naar/LilitaOne-Regular.ttf docs/
+Usage: python3 tools/make_logo.py path/to/LilitaOne-Regular.ttf docs/
 """
 import math
 import sys
@@ -23,7 +23,7 @@ def star_points(cx, cy, r_out, r_in, rot=-90):
 
 
 def draw_star(img, cx, cy, r):
-    """Ster met een rode (Mario) en groene (Luigi) helft, wit en donker omrand."""
+    """Star with a red (Mario) and a green (Luigi) half, with white and dark outlines."""
     d = ImageDraw.Draw(img)
     outer = star_points(cx, cy, r * 1.16, r * 0.5 * 1.16)
     d.polygon(outer, fill=NAVY)
@@ -39,12 +39,12 @@ def draw_star(img, cx, cy, r):
     from PIL import ImageChops
     img.paste(green, (0, 0), mask_l)
     img.paste(red, (0, 0), ImageChops.multiply(mask_l, left))
-    # glans
+    # shine
     gl = star_points(cx - r * 0.12, cy - r * 0.15, r * 0.45, r * 0.22)
     hl = Image.new('RGBA', img.size, (0, 0, 0, 0))
     ImageDraw.Draw(hl).polygon(gl, fill=(255, 255, 255, 70))
     img.alpha_composite(hl)
-    # bliksemscheiding, alleen binnen de ster
+    # lightning split, only inside the star
     bolt = Image.new('L', img.size, 0)
     ImageDraw.Draw(bolt).line([(cx + r * 0.10, cy - r * 1.1), (cx - r * 0.06, cy - r * 0.12),
                                (cx + r * 0.09, cy + r * 0.02), (cx - r * 0.10, cy + r * 1.0)],
@@ -54,7 +54,7 @@ def draw_star(img, cx, cy, r):
 
 
 def text_layer(size, text, font, fill_top, fill_bottom, stroke, sw):
-    """Tekst met verticale kleurovergang en een dikke rand."""
+    """Text with a vertical gradient and a thick outline."""
     W, H = size
     mask = Image.new('L', size, 0)
     ImageDraw.Draw(mask).text((W // 2, H // 2), text, font=font, anchor='mm', fill=255)
@@ -94,7 +94,7 @@ def make_logo(font_path, out_dir):
     logo = img.resize((W // SS, H // SS), Image.LANCZOS)
     logo = logo.crop(logo.getbbox())
     logo.save(f'{out_dir}/logo.png')
-    # vierkant icoon
+    # square icon
     ic = Image.new('RGBA', (512 * SS, 512 * SS), (0, 0, 0, 0))
     draw_star(ic, 256 * SS, 266 * SS, 200 * SS)
     ic.resize((512, 512), Image.LANCZOS).save(f'{out_dir}/icon.png')

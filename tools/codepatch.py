@@ -1,37 +1,37 @@
-"""ARM9 code-patches voor de Europese ROM (A2DP, EUR).
+"""ARM9 code patches for the European ROM (A2DP, EUR).
 
-Voegt extra pagina's toe aan het stagekeuzemenu van Mario vs Luigi:
-  * R bladert naar de volgende pagina, L naar de vorige;
-  * de thumbnails en paletten worden live in VRAM omgewisseld;
-  * bij het laden worden de stagebestanden in de coursetabel omgezet;
-  * de instelling "Random" kiest uit de stages van alle pagina's.
+Adds extra pages to the Mario vs Luigi stage select menu:
+  * R goes to the next page, L to the previous one;
+  * the thumbnails and palettes are swapped live in VRAM;
+  * when a stage loads, the stage files in the course table are switched;
+  * the "Random" setting picks from the stages on all pages.
 
-Eigen code en data staan in een extra autoload-sectie op 0x0219A100.
-De heap (arena) wordt daarvoor een stukje opgeschoven.
+Our own code and data live in an extra autoload section at 0x0219A100.
+The heap (arena) is moved up a little to make room for it.
 """
 import struct
 from keystone import Ks, KS_ARCH_ARM, KS_MODE_ARM
 
-# ---- adressen (EUR) ---------------------------------------------------------
-ARENA_LO_LITERAL = 0x02055EF8   # literal met de begin van de main arena
+# ---- addresses (EUR) ---------------------------------------------------------
+ARENA_LO_LITERAL = 0x02055EF8   # literal holding the start of the main arena
 ARENA_LO = 0x0219A100
-COURSE_BIN_J01 = 0x0202C8C4     # coursetabel (.bin), index 181 = J01
-COURSE_BGDAT_J01 = 0x0202C5DC   # coursetabel (_bgdat), index 181 = J01
-ARCHIVE_TABLE = 0x02029D54      # tabel met archieven (0x1C per regel)
-KEYS_PRESSED = 0x02099CB4       # gesynchroniseerde invoer; +2 = net ingedrukt
+COURSE_BIN_J01 = 0x0202C8C4     # course table (.bin), index 181 = J01
+COURSE_BGDAT_J01 = 0x0202C5DC   # course table (_bgdat), index 181 = J01
+ARCHIVE_TABLE = 0x02029D54      # archive table (0x1C per row)
+KEYS_PRESSED = 0x02099CB4       # synchronised input; +2 = newly pressed
 PLAY_SE = 0x020128F8
 SE_CURSOR = 0xE5
 
-OV052_GETSTAGE_RET = 0x02160E54     # 'bx lr' van getStage()
-OV052_STAGESEL_UPDATE = 0x02161B30  # 'push {r4,r5,r6,lr}' van state 6 (stagekeuze)
+OV052_GETSTAGE_RET = 0x02160E54     # 'bx lr' of getStage()
+OV052_STAGESEL_UPDATE = 0x02161B30  # 'push {r4,r5,r6,lr}' of state 6 (stage select)
 OV052_RANDOM_MUL = 0x02161FAC       # 'mov r2, #5'
 OV052_RANDOM_STORE = 0x02161FC4     # 'strb r2, [r1]'
 OV009_TITLE_CASE0 = 0x020E5148      # 'b 0x20e5158' (Mario Game)
 OV009_TITLE_CASE1_TARGET = 0x020E5178
 
-THUMB_VRAM = 0x06600000 + 36 * 32   # sub-OBJ tegels van de vijf thumbnails
+THUMB_VRAM = 0x06600000 + 36 * 32   # sub-OBJ tiles of the five thumbnails
 THUMB_TILES_SIZE = 5 * 36 * 32      # 5760 bytes
-THUMB_PAL = 0x05000600 + 3 * 32     # sub-OBJ paletten 3,5,7,9,11
+THUMB_PAL = 0x05000600 + 3 * 32     # sub-OBJ palettes 3, 5, 7, 9, 11
 THUMB_PAGE_SIZE = THUMB_TILES_SIZE + 5 * 32
 
 _ks = Ks(KS_ARCH_ARM, KS_MODE_ARM)
@@ -48,11 +48,11 @@ def branch(frm, to, link=False):
 
 
 def build_section(entries_pages, thumbs_pages, check_off):
-    """Bouw de autoload-sectie voor N pagina's. Geeft (bytes, symbolen) terug.
+    """Build the autoload section for N pages. Returns (bytes, symbols).
 
-    entries_pages: per pagina 10 woorden (5x .bin, 5x _bgdat) voor de coursetabel.
-    thumbs_pages: per pagina THUMB_PAGE_SIZE bytes (tegels + 5 paletten).
-    check_off: offset in de tegeldata waarop alle pagina's van elkaar verschillen.
+    entries_pages: per page 10 words (5x .bin, 5x _bgdat) for the course table.
+    thumbs_pages: per page THUMB_PAGE_SIZE bytes (tiles + 5 palettes).
+    check_off: offset in the tile data where all pages differ from each other.
     """
     npages = len(entries_pages)
     assert npages == len(thumbs_pages) and 2 <= npages <= 5
@@ -205,9 +205,9 @@ def patch_overlay52(data, ram, syms):
 
 
 def patch_overlay9_title(data, ram):
-    """Laat de knop 'Mario Game' in het titelmenu Mario vs Luigi starten."""
+    """Make the 'Mario Game' button in the title menu start Mario vs Luigi."""
     d = bytearray(data)
     o = OV009_TITLE_CASE0 - ram
-    assert d[o:o + 4] == branch(OV009_TITLE_CASE0, 0x020E5158), 'ov009 onbekend'
+    assert d[o:o + 4] == branch(OV009_TITLE_CASE0, 0x020E5158), 'unknown ov009'
     d[o:o + 4] = branch(OV009_TITLE_CASE0, OV009_TITLE_CASE1_TARGET)
     return bytes(d)
