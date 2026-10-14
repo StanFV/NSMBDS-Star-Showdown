@@ -6,17 +6,17 @@ Deze repository bevat geen ROM en geen materiaal van Nintendo. Het bouwscript pa
 
 ## Wat zit erin
 
-**Tien stages in Mario vs Luigi.** Het stagekeuzemenu heeft nu twee pagina's. Met **L** of **R** wissel je tussen de vijf originele stages en vijf nieuwe stages. De thumbnails wisselen mee en onder "Select a course." staat een hint. Elke nieuwe stage hoort bij het thema van de originele stage op dezelfde plek:
+**Twintig stages in Mario vs Luigi.** Het stagekeuzemenu heeft nu vier pagina's met elk vijf stages. Met **R** blader je naar de volgende pagina en met **L** terug. De thumbnails wisselen mee en onder "Select a course." staat een hint. Elke plek op een pagina hoort bij het thema van de originele stage op die plek (gras, ondergronds, ijs, pijpen, kasteel).
 
-| Plek | Nieuwe stage | Thema | Kort ontwerp |
+| Plek | Pagina 2 | Pagina 3 | Pagina 4 |
 |---|---|---|---|
-| 1 | Heuvelrug | gras | hoge centrale heuvel, twee verhoogde uiteinden, drie afgronden |
-| 2 | Steengroeve | ondergronds | symmetrische grot met richels op vijf hoogtes |
-| 3 | IJsbaan | ijs | brede sneeuwvlakte met ijsplatforms en hoogteverschillen |
-| 4 | Buizenstelsel | pijpen | pijpen van verschillende hoogte, piranhaplanten, zij-warps |
-| 5 | Kantelen | kasteel | vier torens, een lange brug en een lage middenmuur |
+| 1 gras | Heuvelrug: centrale heuvel en drie afgronden | Zweefeilanden: geen grond, alleen zwevende eilanden en een hogere camera | Trappenpiramide: reusachtige trappiramide met een leger Goomba's |
+| 2 ondergronds | Steengroeve: richels op vijf hoogtes | Doolhof: gangen op vier verdiepingen met verspringende openingen | Muntenkluis: een kluis vol munten die je alleen via het dak bereikt |
+| 3 ijs | IJsbaan: sneeuwvlakte met ijsplatforms | Glijbaan: twee ijstrappen naar een vallei met een smalle brug | Bevroren meer: alles glad ijs met sneeuwrotsen als obstakels |
+| 4 pijpen | Buizenstelsel: pijpen en piranhaplanten | Pijpenorgel: pijpen die samen een golf vormen | Riool: twee verdiepingen, een buis onderin en een loopbrug erboven |
+| 5 kasteel | Kantelen: vier torens en een brug | Kerker: korte pilaren en bruggen op twee hoogtes | Torenspits: geen plafond, een hoge toren en een hogere camera |
 
-De instelling **Course: Random** kiest nu uit alle tien de stages. Wisselen en willekeurig kiezen blijven gesynchroniseerd tussen beide spelers.
+De instelling **Course: Random** kiest uit alle twintig stages. Bladeren en willekeurig kiezen blijven gesynchroniseerd tussen beide spelers.
 
 **Geen story mode meer.** De knop "Mario Game" in het titelmenu start nu ook Mario vs Luigi. Alle bestanden die alleen door de story mode gebruikt worden (levels van wereld 1 tot en met 8, wereldkaart, eindfilmpje en aftiteling) zijn verwijderd. De ROM gaat daardoor van 33,5 MB naar ongeveer 18 MB. Minigames en Options werken gewoon.
 
@@ -41,9 +41,13 @@ Het resultaat komt in `out/`:
 
 Met `--keep-story` blijft de story mode staan; dan worden alleen de nieuwe stages toegevoegd.
 
+### Zelf stages toevoegen
+
+Een stage is een Python-functie in `levels/stages.py` die een `StageBuilder` teruggeeft. Voeg de functie toe aan `PAGES` in `build.py` (vijf per pagina, maximaal vijf pagina's). De plek op de pagina bepaalt het thema.
+
 ## Spelen
 
-Mario vs Luigi heeft twee DS-systemen nodig. Op een emulator gaat dat met melonDS: kies in het eerste venster *System → Multiplayer → Launch new instance* en laad de ROM ook in het tweede venster. Kies in beide "Mario Vs. Luigi" en daarna "Compete with another New Super Mario Bros. owner". De host kiest de stage en wisselt met L of R van pagina.
+Mario vs Luigi heeft twee DS-systemen nodig. Op een emulator gaat dat met melonDS: kies in het eerste venster *System → Multiplayer → Launch new instance* en laad de ROM ook in het tweede venster. Kies in beide "Mario Vs. Luigi" en daarna "Compete with another New Super Mario Bros. owner". De host kiest de stage en bladert met L en R door de pagina's.
 
 ## Hoe het werkt
 
@@ -53,11 +57,11 @@ De code-aanpassingen (Europese versie):
 
 | Adres | Wat |
 |---|---|
-| `0x0219A100` | extra autoload-sectie van de ARM9 met eigen code, de paginavariabele, de bestandstabellen en de thumbnails van beide pagina's; de heap begint daardoor iets later (literal op `0x02055EF8`) |
+| `0x0219A100` | extra autoload-sectie van de ARM9 met eigen code, de paginavariabele, de bestandstabellen en de thumbnails van alle pagina's; de heap begint daardoor iets later (literal op `0x02055EF8`) |
 | `0x02029D54` | tabel met archieven; de bovengrens van de vijf stage-archieven is verhoogd |
 | ov052 `0x02160E54` | einde van `getStage()`: schrijft de bestands-ID's van de gekozen pagina in de coursetabel (`0x0202C8C4` en `0x0202C5DC`) |
-| ov052 `0x02161B30` | update van het stagekeuzescherm: L/R wisselt de pagina en de thumbnails worden in VRAM bijgewerkt |
-| ov052 `0x02161FAC` en `0x02161FC4` | Random kiest uit tien in plaats van vijf |
+| ov052 `0x02161B30` | update van het stagekeuzescherm: R en L bladeren door de pagina's en de thumbnails worden in VRAM bijgewerkt |
+| ov052 `0x02161FAC` en `0x02161FC4` | Random kiest uit alle pagina's in plaats van vijf stages |
 | ov009 `0x020E5148` | knop "Mario Game" springt naar Mario vs Luigi |
 | `menu_title_E??.narc` bericht 12 | hinttekst voor L/R in vijf talen |
 
@@ -75,7 +79,7 @@ De invoer in het stagekeuzemenu wordt tussen beide DS-systemen gesynchroniseerd,
 
 ## Getest
 
-* Alle vijf nieuwe stages in een echte 2-speler sessie met twee melonDS-instanties (lokale draadloze verbinding), inclusief pagina wisselen en Random.
+* Alle vijftien nieuwe stages in een echte 2-speler sessie met twee melonDS-instanties (lokale draadloze verbinding), inclusief bladeren en Random.
 * De stages in DeSmuME in single-player om tegels, vijanden en blokken te controleren.
 * Titelmenu, Minigames en Options na het verwijderen van de story mode.
 

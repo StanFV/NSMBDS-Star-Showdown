@@ -85,5 +85,13 @@ class StageBuilder:
             e.set(x=x * 16, y=y * 16)
         return self
 
+    def view_size(self, w, h, y=None):
+        """Wijzig de camera-view (in tegels)."""
+        v = self.lvl.views[0]
+        v.w, v.h = w * 16, h * 16
+        if y is not None:
+            v.y = y * 16
+        return self
+
     def build(self):
         return self.lvl.save()

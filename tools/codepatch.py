@@ -1,10 +1,10 @@
 """ARM9 code-patches voor de Europese ROM (A2DP, EUR).
 
-Voegt een tweede pagina toe aan het stagekeuzemenu van Mario vs Luigi:
-  * L of R wisselt tussen de originele en de nieuwe stages;
+Voegt extra pagina's toe aan het stagekeuzemenu van Mario vs Luigi:
+  * R bladert naar de volgende pagina, L naar de vorige;
   * de thumbnails en paletten worden live in VRAM omgewisseld;
   * bij het laden worden de stagebestanden in de coursetabel omgezet;
-  * de instelling "Willekeurig" kiest uit alle tien de stages.
+  * de instelling "Random" kiest uit de stages van alle pagina's.
 
 Eigen code en data staan in een extra autoload-sectie op 0x0219A100.
 De heap (arena) wordt daarvoor een stukje opgeschoven.
@@ -47,13 +47,20 @@ def branch(frm, to, link=False):
     return struct.pack('<I', (0xEB if link else 0xEA) << 24 | (off & 0xFFFFFF))
 
 
-def build_section(entries_page0, entries_page1, thumbs_page0, thumbs_page1, check_off):
-    """Bouw de autoload-sectie. Geeft (bytes, symbolen) terug."""
+def build_section(entries_pages, thumbs_pages, check_off):
+    """Bouw de autoload-sectie voor N pagina's. Geeft (bytes, symbolen) terug.
+
+    entries_pages: per pagina 10 woorden (5x .bin, 5x _bgdat) voor de coursetabel.
+    thumbs_pages: per pagina THUMB_PAGE_SIZE bytes (tegels + 5 paletten).
+    check_off: offset in de tegeldata waarop alle pagina's van elkaar verschillen.
+    """
+    npages = len(entries_pages)
+    assert npages == len(thumbs_pages) and 2 <= npages <= 5
     base = ARENA_LO
     code_size = 0x200
     PAGE = base + code_size
     ENTRIES = PAGE + 4
-    THUMBS = ENTRIES + 80
+    THUMBS = ENTRIES + 40 * npages
     funcs = [
         ('getstage_tail', f"""
         push {{r0, r4, r5, lr}}
@@ -110,11 +117,20 @@ def build_section(entries_page0, entries_page1, thumbs_page0, thumbs_page1, chec
         push {{r0, r1, r2, r3, r12, lr}}
         ldr r1, =0x{KEYS:x}
         ldrh r1, [r1, #2]
-        tst r1, #0x300
-        beq skip
         ldr r2, =0x{PAGE:x}
         ldrb r3, [r2]
-        eor r3, r3, #1
+        tst r1, #0x100
+        beq notr
+        add r3, r3, #1
+        cmp r3, #{N}
+        movge r3, #0
+        b changed
+    notr:
+        tst r1, #0x200
+        beq skip
+        subs r3, r3, #1
+        movmi r3, #{NM1}
+    changed:
         strb r3, [r2]
         mov r0, #0x{SE:x}
         mov r1, #0
@@ -125,13 +141,17 @@ def build_section(entries_page0, entries_page1, thumbs_page0, thumbs_page1, chec
         push {{r4, r5, r6, lr}}
         b #0x{RET:x}
         """.format(KEYS=KEYS_PRESSED, PAGE=PAGE, SE=SE_CURSOR, PLAY_SE=PLAY_SE,
-                   RET=OV052_STAGESEL_UPDATE + 4)),
+                   RET=OV052_STAGESEL_UPDATE + 4, N=npages, NM1=npages - 1)),
         ('random_hook', f"""
         ldr r3, =0x{PAGE:x}
+        mov r12, #0
+    loop:
         cmp r2, #5
-        subge r2, r2, #5
-        movge r12, #1
-        movlt r12, #0
+        blt store
+        sub r2, r2, #5
+        add r12, r12, #1
+        b loop
+    store:
         strb r12, [r3]
         strb r2, [r1]
         bx lr
@@ -149,13 +169,17 @@ def build_section(entries_page0, entries_page1, thumbs_page0, thumbs_page1, chec
     assert len(code) <= code_size, hex(len(code))
     data = bytearray(code.ljust(code_size, b'\0'))
     data += b'\0' * 4  # PAGE
-    for e in list(entries_page0) + list(entries_page1):
-        data += struct.pack('<I', e)
-    assert len(thumbs_page0) == THUMB_PAGE_SIZE and len(thumbs_page1) == THUMB_PAGE_SIZE
-    data += thumbs_page0 + thumbs_page1
+    for entries in entries_pages:
+        assert len(entries) == 10
+        for e in entries:
+            data += struct.pack('<I', e)
+    for t in thumbs_pages:
+        assert len(t) == THUMB_PAGE_SIZE
+        data += t
     while len(data) % 32:
         data += b'\0'
     syms['PAGE'] = PAGE
+    syms['NPAGES'] = npages
     return bytes(data), syms
 
 
@@ -174,7 +198,7 @@ def patch_overlay52(data, ram, syms):
     expect(OV052_STAGESEL_UPDATE, 0xE92D4070)
     put(OV052_STAGESEL_UPDATE, branch(OV052_STAGESEL_UPDATE, syms['stagesel_hook']))
     expect(OV052_RANDOM_MUL, 0xE3A02005)
-    put(OV052_RANDOM_MUL, asm('mov r2, #10', OV052_RANDOM_MUL))
+    put(OV052_RANDOM_MUL, asm(f"mov r2, #{5 * syms['NPAGES']}", OV052_RANDOM_MUL))
     expect(OV052_RANDOM_STORE, 0xE5C12000)
     put(OV052_RANDOM_STORE, branch(OV052_RANDOM_STORE, syms['random_hook'], link=True))
     return bytes(d)

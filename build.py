@@ -37,14 +37,30 @@ ORIGINAL_SHA1 = 'b0f7886720e842ed922569e1bb5c39c0fa090331'
 FILE_OFFSET = 135  # bestands-ID's in de tabellen zijn relatief
 THUMB_AREA = 192  # uitsnede in pixels voor een thumbnail (48x48)
 
-# slot, ontwerpfunctie, originele stage, nieuw FAT-bestand, archief, thumbnail-uitsnede (px), achtergrondkleur
-STAGES = [
-    (0, stages.heuvelrug, 'J01_1', 'J06_1', 'Dat_Field', (23 * 16, 8 * 16), (92, 148, 252)),
-    (1, stages.steengroeve, 'J02_1', 'J07_1', 'Dat_Basement', (6 * 16, 7 * 16), (20, 24, 48)),
-    (2, stages.ijsbaan, 'J03_1', 'J08_1', 'Dat_Ice', (36 * 16, 14 * 16), (168, 208, 248)),
-    (3, stages.buizenstelsel, 'J04_1', 'J09_1', 'Dat_Pipe', (22 * 16, 11 * 16), (48, 60, 40)),
-    (4, stages.kantelen, 'J05_1', 'J10_1', 'Dat_Fort', (14 * 16, 9 * 16), (40, 48, 104)),
+# Elke pagina heeft vijf plekken; plek k gebruikt altijd het thema-archief van
+# originele stage k (zelfde tileset, achtergrond en vijanden).
+SLOTS = [
+    # basisstage, archief, achtergrondkleur voor previews
+    ('J01_1', 'Dat_Field', (92, 148, 252)),
+    ('J02_1', 'Dat_Basement', (20, 24, 48)),
+    ('J03_1', 'Dat_Ice', (168, 208, 248)),
+    ('J04_1', 'Dat_Pipe', (48, 60, 40)),
+    ('J05_1', 'Dat_Fort', (40, 48, 104)),
 ]
+
+# Per pagina vijf stages: (ontwerpfunctie, thumbnail-uitsnede in tegels)
+PAGES = [
+    [(stages.heuvelrug, (23, 8)), (stages.steengroeve, (6, 7)), (stages.ijsbaan, (36, 14)),
+     (stages.buizenstelsel, (22, 11)), (stages.kantelen, (14, 9))],
+    [(stages.zweefeilanden, (20, 10)), (stages.doolhof, (8, 6)), (stages.glijbaan, (54, 14)),
+     (stages.pijpenorgel, (14, 11)), (stages.kerker, (22, 6))],
+    [(stages.trappenpiramide, (22, 4)), (stages.muntenkluis, (8, 8)), (stages.bevrorenmeer, (54, 8)),
+     (stages.riool, (16, 10)), (stages.torenspits, (22, 4))],
+]
+
+# Op pagina 2 worden de stages ook als gewoon bestand opgeslagen (J06..J10),
+# handig voor tests in single-player.
+FAT_COPIES = ['J06_1', 'J07_1', 'J08_1', 'J09_1', 'J10_1']
 
 # Extra regel onder "Kies een stage" (bericht 12 in menu_title_*.narc[20])
 LR_HINT = {
@@ -149,28 +165,56 @@ def main():
 
     # ---- 1. nieuwe stages ------------------------------------------------
     print('Nieuwe stages bouwen')
-    entries0 = [arm9_read(arm9, codepatch.COURSE_BIN_J01 + 4 * i, '<I') for i in range(5)] + \
-               [arm9_read(arm9, codepatch.COURSE_BGDAT_J01 + 4 * i, '<I') for i in range(5)]
-    entries1 = [0] * 10
-    thumbs = []
-    for slot, design, base, target, archive, crop, bgcol in STAGES:
-        base_lvl = Level.load(rom.getFileByName(f'course/{base}.bin'),
-                              rom.getFileByName(f'course/{base}_bgdat.bin'))
-        lvl_bin, lvl_bg = design(base_lvl).build()
+    entries_orig = [arm9_read(arm9, codepatch.COURSE_BIN_J01 + 4 * i, '<I') for i in range(5)] + \
+                   [arm9_read(arm9, codepatch.COURSE_BGDAT_J01 + 4 * i, '<I') for i in range(5)]
+    entries_pages = [entries_orig]
+    thumbs_pages = []
+    narcs = {}
+    for page_no, page in enumerate(PAGES, start=2):
+        entries = [0] * 10
+        thumbs = []
+        for slot, (design, crop) in enumerate(page):
+            base, archive, bgcol = SLOTS[slot]
+            base_lvl = Level.load(rom.getFileByName(f'course/{base}.bin'),
+                                  rom.getFileByName(f'course/{base}_bgdat.bin'))
+            lvl_bin, lvl_bg = design(base_lvl).build()
 
-        # a) als gewoon bestand (single-player / tests)
-        rom.setFileByName(f'course/{target}.bin', lvl_bin)
-        rom.setFileByName(f'course/{target}_bgdat.bin', lvl_bg)
-        fat_bin = rom.filenames.idOf(f'course/{target}.bin')
-        fat_bg = rom.filenames.idOf(f'course/{target}_bgdat.bin')
+            # a) gewoon bestand (alleen pagina 2), anders verwijst de cartridge-ID naar de basisstage
+            if page_no == 2:
+                target = FAT_COPIES[slot]
+                rom.setFileByName(f'course/{target}.bin', lvl_bin)
+                rom.setFileByName(f'course/{target}_bgdat.bin', lvl_bg)
+            else:
+                target = base
+            fat_bin = rom.filenames.idOf(f'course/{target}.bin')
+            fat_bg = rom.filenames.idOf(f'course/{target}_bgdat.bin')
 
-        # b) in het VS-archief (wordt in Mario vs Luigi gebruikt)
-        arc_hi = entries0[slot] >> 24                       # bv. 0xC2 voor a02
-        narc = ndspy.narc.NARC(rom.getFileByName(f'ARCHIVE/{archive}.narc'))
-        idx_bin = len(narc.files)
-        narc.files += [lvl_bin, lvl_bg]
+            # b) in het VS-archief (wordt in Mario vs Luigi gebruikt)
+            arc_hi = entries_orig[slot] >> 24                  # bv. 0xC2 voor a02
+            if archive not in narcs:
+                narcs[archive] = (arc_hi, ndspy.narc.NARC(rom.getFileByName(f'ARCHIVE/{archive}.narc')))
+            narc = narcs[archive][1]
+            idx_bin = len(narc.files)
+            narc.files += [lvl_bin, lvl_bg]
+            entries[slot] = ((arc_hi << 8 | idx_bin) << 16) | (fat_bin - FILE_OFFSET)
+            entries[5 + slot] = ((arc_hi << 8 | (idx_bin + 1)) << 16) | (fat_bg - FILE_OFFSET)
+
+            # c) preview en thumbnail
+            lvl = Level.load(lvl_bin, lvl_bg)
+            v = lvl.views[0]
+            full = renderer.render(lvl, sprites=False, bg=bgcol, crop=(v.x, v.y, v.x + v.w, v.y + v.h))
+            full.save(os.path.join(args.out, 'previews', f'p{page_no}_{slot + 1}_{design.__name__}.png'))
+            cx, cy = crop[0] * 16, crop[1] * 16
+            th = renderer.render(lvl, sprites=False, bg=bgcol).crop((cx, cy, cx + THUMB_AREA, cy + THUMB_AREA))
+            thumbs.append(th.resize((48, 48), Image.LANCZOS))
+            log(f'pagina {page_no}: {design.__name__:15s} -> {archive}[{idx_bin}]  '
+                f'({len(lvl_bin)}+{len(lvl_bg)} bytes)')
+        entries_pages.append(entries)
+        thumbs_pages.append(thumbs)
+
+    # archieven opslaan en hun bovengrens in de archieftabel ophogen
+    for archive, (arc_hi, narc) in narcs.items():
         rom.setFileByName(f'ARCHIVE/{archive}.narc', narc.save())
-        # bovengrens van het archief ophogen
         for i in range(0x30):
             row = codepatch.ARCHIVE_TABLE + i * 0x1C
             lo = arm9_read(arm9, row + 0x0C, '<H')
@@ -181,36 +225,29 @@ def main():
         else:
             raise RuntimeError(f'archief {arc_hi:#x} niet gevonden')
 
-        entries1[slot] = ((arc_hi << 8 | idx_bin) << 16) | (fat_bin - FILE_OFFSET)
-        entries1[5 + slot] = ((arc_hi << 8 | (idx_bin + 1)) << 16) | (fat_bg - FILE_OFFSET)
-
-        # c) preview en thumbnail
-        lvl = Level.load(lvl_bin, lvl_bg)
-        v = lvl.views[0]
-        full = renderer.render(lvl, sprites=False, bg=bgcol, crop=(v.x, v.y, v.x + v.w, v.y + v.h))
-        full.save(os.path.join(args.out, 'previews', f'{slot + 1}_{design.__name__}.png'))
-        cx, cy = crop
-        th = renderer.render(lvl, sprites=False, bg=bgcol).crop((cx, cy, cx + THUMB_AREA, cy + THUMB_AREA))
-        thumbs.append(th.resize((48, 48), Image.LANCZOS))
-        log(f'{design.__name__:14s} -> {target} + {archive}[{idx_bin}]  ({len(lvl_bin)}+{len(lvl_bg)} bytes)')
-
     # ---- 2. thumbnails ----------------------------------------------------
     print('Thumbnails maken')
     tiles0 = ndspy.lz10.decompress(ndspy.narc.NARC(rom.getFileByName('ARCHIVE/menu_title_EEN.narc')).files[9])
     tiles0 = bytes(tiles0[36 * 32:36 * 32 + codepatch.THUMB_TILES_SIZE])
     pals_all = ndspy.lz10.decompress(ndspy.narc.NARC(rom.getFileByName('ARCHIVE/menu_title.narc')).files[12])
     pals0 = b''.join(bytes(pals_all[(3 + 2 * k) * 32:(4 + 2 * k) * 32]) for k in range(5))
-    tiles1, pals1 = b'', b''
-    for k, img in enumerate(thumbs):
-        t, p = thumb_to_obj(img, tiles0[k * 1152:(k + 1) * 1152])
-        tiles1 += t
-        pals1 += p
-    sheet = Image.new('RGB', (5 * 52, 52), (255, 255, 255))
-    for k, img in enumerate(thumbs):
-        sheet.paste(img, (k * 52 + 2, 2))
+    page_data = [tiles0 + pals0]
+    for thumbs in thumbs_pages:
+        tiles, pals = b'', b''
+        for k, img in enumerate(thumbs):
+            t, p = thumb_to_obj(img, tiles0[k * 1152:(k + 1) * 1152])
+            tiles += t
+            pals += p
+        page_data.append(tiles + pals)
+    sheet = Image.new('RGB', (5 * 52, 52 * len(thumbs_pages)), (255, 255, 255))
+    for row, thumbs in enumerate(thumbs_pages):
+        for k, img in enumerate(thumbs):
+            sheet.paste(img, (k * 52 + 2, row * 52 + 2))
     sheet.resize((sheet.width * 3, sheet.height * 3), Image.NEAREST).save(
         os.path.join(args.out, 'previews', 'thumbnails.png'))
-    check_off = next(i for i in range(0, len(tiles0), 4) if tiles0[i:i + 4] != tiles1[i:i + 4])
+    # een woord waarop alle pagina's van elkaar verschillen (om VRAM te controleren)
+    check_off = next(i for i in range(0, codepatch.THUMB_TILES_SIZE, 4)
+                     if len({d[i:i + 4] for d in page_data}) == len(page_data))
 
     # ---- 2b. hinttekst in het menu ---------------------------------------
     for lang, hint in LR_HINT.items():
@@ -223,12 +260,12 @@ def main():
 
     # ---- 3. code -----------------------------------------------------------
     print('Code patchen')
-    section, syms = codepatch.build_section(entries0, entries1, tiles0 + pals0, tiles1 + pals1, check_off)
+    section, syms = codepatch.build_section(entries_pages, page_data, check_off)
     arm9.sections.insert(len(arm9.sections) - 1,
                          ndspy.code.MainCodeFile.Section(section, codepatch.ARENA_LO, 0))
     arm9_patch(arm9, codepatch.ARENA_LO_LITERAL, '<I', codepatch.ARENA_LO + len(section),
                expect=codepatch.ARENA_LO)
-    log(f'extra code/data: {len(section)} bytes op {codepatch.ARENA_LO:#x}')
+    log(f'{len(entries_pages)} pagina\'s, extra code/data: {len(section)} bytes op {codepatch.ARENA_LO:#x}')
 
     ov52 = ovs[52]
     ov52.data = codepatch.patch_overlay52(ov52.data, ov52.ramAddress, syms)
