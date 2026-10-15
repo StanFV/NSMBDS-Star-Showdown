@@ -30,6 +30,7 @@ from PIL import Image
 import codepatch
 from bmg import BMG
 from banner import set_banner
+import titlescreen
 import stages
 from nsmbgfx import LevelRenderer
 from nsmblevel import Level
@@ -259,6 +260,16 @@ def main():
         narc.files[20] = msgs.save()
         rom.setFileByName(name, narc.save())
 
+    # ---- 2c. Star Showdown logo on the title screen -----------------------
+    ncl = ndspy.lz10.decompress(rom.getFileByName(titlescreen.NCL_FILE))
+    ncg = ndspy.lz10.decompress(rom.getFileByName(titlescreen.NCG_FILES[0]))
+    new_ncg, new_ncl = titlescreen.build(ncg, ncl, os.path.join(HERE, 'assets', 'title_star.png'),
+                                         os.path.join(HERE, 'assets', 'title_text.png'))
+    packed = ndspy.lz10.compress(new_ncg)
+    for name in titlescreen.NCG_FILES:
+        rom.setFileByName(name, packed)
+    rom.setFileByName(titlescreen.NCL_FILE, ndspy.lz10.compress(new_ncl))
+
     # ---- 3. code -----------------------------------------------------------
     print('Patching code')
     section, syms = codepatch.build_section(entries_pages, page_data, check_off)
@@ -274,6 +285,7 @@ def main():
     if not args.keep_story:
         ov9 = ovs[9]
         ov9.data = codepatch.patch_overlay9_title(ov9.data, ov9.ramAddress)
+        ov9.data = codepatch.patch_overlay9_single_button(ov9.data, ov9.ramAddress)
         patched.append(9)
     for i in patched:
         rom.files[ovs[i].fileID] = ovs[i].save(compress=False)

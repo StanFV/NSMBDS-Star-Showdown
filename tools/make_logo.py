@@ -1,6 +1,6 @@
 """Draws the Star Showdown logo (original design, font Lilita One, OFL).
 
-Usage: python3 tools/make_logo.py path/to/LilitaOne-Regular.ttf docs/
+Usage: python3 tools/make_logo.py path/to/LilitaOne-Regular.ttf docs/ assets/
 """
 import math
 import sys
@@ -101,6 +101,31 @@ def make_logo(font_path, out_dir):
     return logo
 
 
+
+
+def make_title_art(font_path, out_dir):
+    """Art for the title screen (256x192, top screen), split into two layers.
+
+    The game draws its logo with sprites in fixed places, so the art has to fit
+    those areas: the star goes where the old "New" badge was (palette 1) and
+    the text goes where the old outline layer was (palette 2)."""
+    S = 4
+    star = Image.new('RGBA', (256 * S, 192 * S), (0, 0, 0, 0))
+    draw_star(star, int(66 * S), int(44 * S), int(29 * S))
+    text = Image.new('RGBA', (256 * S, 192 * S), (0, 0, 0, 0))
+    big = ImageFont.truetype(font_path, 46 * S)
+    mid = ImageFont.truetype(font_path, 34 * S)
+    t1 = text_layer((120 * S, 60 * S), 'STAR', big, (255, 236, 120), GOLD_DARK, NAVY, 5 * S)
+    t2 = text_layer((256 * S, 56 * S), 'SHOWDOWN', mid, (255, 255, 255), (190, 214, 255), NAVY, 5 * S)
+    text.alpha_composite(t1, (94 * S, 20 * S))
+    text.alpha_composite(t2, (-5 * S, 72 * S))
+    for name, layer in (('title_star', star), ('title_text', text)):
+        small = layer.resize((256, 192), Image.LANCZOS)
+        a = small.getchannel('A').point(lambda v: 255 if v >= 110 else 0)
+        small.putalpha(a)
+        small.save(f'{out_dir}/{name}.png')
+
+
 if __name__ == '__main__':
-    lg = make_logo(sys.argv[1], sys.argv[2])
-    print(lg.size)
+    print(make_logo(sys.argv[1], sys.argv[2]).size)
+    make_title_art(sys.argv[1], sys.argv[3] if len(sys.argv) > 3 else sys.argv[2])

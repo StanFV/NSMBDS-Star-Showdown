@@ -211,3 +211,30 @@ def patch_overlay9_title(data, ram):
     assert d[o:o + 4] == branch(OV009_TITLE_CASE0, 0x020E5158), 'unknown ov009'
     d[o:o + 4] = branch(OV009_TITLE_CASE0, OV009_TITLE_CASE1_TARGET)
     return bytes(d)
+
+
+# ---- title menu: only "Mario Vs. Luigi" -------------------------------------
+OV009_PATCHES = [
+    # (address, original instruction, new instruction)
+    (0x020E18E0, 'mov r8, #0', 'mov r8, #1'),            # draw loop starts at button 1
+    (0x020E18E4, 'mov fp, r8', 'mov fp, #0'),            # (r8 was also used as a zero)
+    (0x020E18E8, 'mov r5, r8', 'mov r5, #0'),
+    (0x020E1984, 'cmp r8, #4', 'cmp r8, #2'),            # ... and stops after it
+    (0x020E52B0, 'cmp r7, #3', 'cmp r7, #1'),            # touch: only button 1 counts
+    (0x020E52B4, 'bgt #0x20e538c', 'bne #0x20e538c'),
+    (0x020E5364, 'addne r1, r1, #1', 'mov r0, r0'),      # d-pad down does nothing
+    (0x020E5384, 'subne r1, r1, #1', 'mov r0, r0'),      # d-pad up does nothing
+    (0x020E5924, 'moveq r1, #2', 'moveq r1, #1'),        # default selection: button 1
+    (0x020E5934, 'mov r1, #0', 'mov r1, #1'),
+]
+
+
+def patch_overlay9_single_button(data, ram):
+    """Show only the "Mario Vs. Luigi" button on the title menu and select it."""
+    d = bytearray(data)
+    for addr, old, new in OV009_PATCHES:
+        o = addr - ram
+        if old is not None:
+            assert d[o:o + 4] == asm(old, addr), f'ov009 {addr:#x}: unexpected code'
+        d[o:o + 4] = asm(new, addr)
+    return bytes(d)
