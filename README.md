@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>A Mario vs Luigi rom hack for New Super Mario Bros. (DS, European version)</b><br>
-  20 arenas &middot; no story mode &middot; ROM shrunk from 33.5 MB to 18 MB
+  20 arenas &middot; without story mode &middot; ROM shrunk from 33.5 MB to 18 MB
 </p>
 
 ---
