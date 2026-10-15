@@ -24,6 +24,8 @@ This repository does not contain a ROM. The build script applies all changes to 
 | **ROM size** | 18 MB instead of 33.5 MB |
 | **Version** | European ROM only (En, Fr, De, Es, It) |
 
+The new stages are made to be hard: wide bottomless pits, lifts that rise out of them, Bullet Bill blasters, Bob-ombs, flying question blocks and plenty of Goombas, Koopas and Piranha Plants. Falling into a pit costs you stars, so every jump counts.
+
 Every slot on a page belongs to a theme: slot 1 is grass, 2 underground, 3 ice, 4 pipes and 5 castle. This way a new stage always uses the tileset, background and enemies that the game prepares for that theme.
 
 ## Title screen
@@ -39,31 +41,31 @@ All screenshots come from a real two-player match: Mario's screen on the left, L
 ### Page 2
 
 #### Hilltop
-A tall central hill with raised ends and three pits. The floating blocks are a stepping stone to the stars.
+A tall central hill with raised ends and wide pits. Lifts rise out of the two widest pits, Bullet Bill blasters stand on the hill and a flying question block circles above it.
 
 <img src="docs/stages/hilltop.png" alt="Hilltop" width="640">
 <details><summary>Map</summary><img src="docs/maps/hilltop.png" alt="Map of Hilltop"></details>
 
 #### Quarry
-A symmetrical cave with ledges at five heights and a raised stone section in the middle.
+A symmetrical cave with ledges at five heights. Two holes in the floor have rising lifts, and blasters on the top ledge fire across the cave.
 
 <img src="docs/stages/quarry.png" alt="Quarry" width="640">
 <details><summary>Map</summary><img src="docs/maps/quarry.png" alt="Map of Quarry"></details>
 
 #### Snowfield
-A wide snowfield with ice platforms, height differences and three pits.
+A wide snowfield with ice platforms, height differences and four wide pits with lifts. Blasters guard the high ground and red Koopas patrol the edges.
 
 <img src="docs/stages/snowfield.png" alt="Snowfield" width="640">
 <details><summary>Map</summary><img src="docs/maps/snowfield.png" alt="Map of Snowfield"></details>
 
 #### Pipeworks
-Pipes of different heights with Piranha Plants. The side warp pipes from the original stage are still there.
+Pipes of different heights with a Piranha Plant in almost every pipe. The gaps in the floor are wider and have lifts. The side warp pipes from the original stage are still there.
 
 <img src="docs/stages/pipeworks.png" alt="Pipeworks" width="640">
 <details><summary>Map</summary><img src="docs/maps/pipeworks.png" alt="Map of Pipeworks"></details>
 
 #### Battlements
-Four towers of rising height and a long bridge above a low middle wall.
+Four towers of rising height and a low middle wall with a pit on each side. Bob-ombs walk the floor, blasters stand on the tall towers and lifts carry you out of the pits.
 
 <img src="docs/stages/battlements.png" alt="Battlements" width="640">
 <details><summary>Map</summary><img src="docs/maps/battlements.png" alt="Map of Battlements"></details>
@@ -71,31 +73,31 @@ Four towers of rising height and a long bridge above a low middle wall.
 ### Page 3
 
 #### Sky Islands
-There is no ground: only grass islands floating above nothing. This stage has a taller camera than the original arenas.
+There is no ground: only grass islands floating above nothing. Lifts rise from the abyss and blasters fire across the middle island. This stage has a taller camera than the original arenas.
 
 <img src="docs/stages/sky_islands.png" alt="Sky Islands" width="640">
 <details><summary>Map</summary><img src="docs/maps/sky_islands.png" alt="Map of Sky Islands"></details>
 
 #### Labyrinth
-Corridors on four floors. The openings shift on every floor, so the shortest way up is never straight up.
+Corridors on four floors. The openings shift on every floor, Bullet Bill blasters block the corridors and there is a hole in the bottom floor.
 
 <img src="docs/stages/labyrinth.png" alt="Labyrinth" width="640">
 <details><summary>Map</summary><img src="docs/maps/labyrinth.png" alt="Map of Labyrinth"></details>
 
 #### Ice Slide
-Two icy staircases slide down into a valley. Slide too fast and you drop through the gap next to the narrow ice bridge.
+Two icy staircases slide down into a valley. Slide too fast and you drop through the gap next to the narrow ice bridge, while blasters on the steps shoot down the slope.
 
 <img src="docs/stages/ice_slide.png" alt="Ice Slide" width="640">
 <details><summary>Map</summary><img src="docs/maps/ice_slide.png" alt="Map of Ice Slide"></details>
 
 #### Pipe Organ
-Rows of pipes whose heights form a wave, with Piranha Plants in the lowest pipes.
+Rows of pipes whose heights form a wave. There is no floor between the pipes: miss a jump and you fall. Piranha Plants live in the four lowest pipes.
 
 <img src="docs/stages/pipe_organ.png" alt="Pipe Organ" width="640">
 <details><summary>Map</summary><img src="docs/maps/pipe_organ.png" alt="Map of Pipe Organ"></details>
 
 #### Dungeon
-A low dungeon with short pillars and bridges at two heights.
+A low dungeon with short pillars, bridges at two heights and pits next to the middle pillar. Five Bob-ombs and two blasters keep you moving.
 
 <img src="docs/stages/dungeon.png" alt="Dungeon" width="640">
 <details><summary>Map</summary><img src="docs/maps/dungeon.png" alt="Map of Dungeon"></details>
@@ -103,31 +105,31 @@ A low dungeon with short pillars and bridges at two heights.
 ### Page 4
 
 #### Step Pyramid
-A giant step pyramid with a crown of question blocks and an army of Goombas on its steps.
+A giant step pyramid with a crown of question blocks, blasters on the upper steps and an army of Goombas. The pits at its feet are wide.
 
 <img src="docs/stages/step_pyramid.png" alt="Step Pyramid" width="640">
 <details><summary>Map</summary><img src="docs/maps/step_pyramid.png" alt="Map of Step Pyramid"></details>
 
 #### Coin Vault
-A vault full of coins in the middle. The only way in is through the roof.
+A vault full of coins in the middle. The only way in is through the roof, there are pits next to the vault walls and blasters on the top ledges.
 
 <img src="docs/stages/coin_vault.png" alt="Coin Vault" width="640">
 <details><summary>Map</summary><img src="docs/maps/coin_vault.png" alt="Map of Coin Vault"></details>
 
 #### Frozen Lake
-The whole floor is slippery ice, with snow rocks as obstacles.
+The whole floor is slippery ice, with snow rocks as obstacles. Four holes in the ice have lifts and blasters sit on the rocks.
 
 <img src="docs/stages/frozen_lake.png" alt="Frozen Lake" width="640">
 <details><summary>Map</summary><img src="docs/maps/frozen_lake.png" alt="Map of Frozen Lake"></details>
 
 #### Sewer
-Two floors: a low tunnel with Piranha Plants at the bottom and a walkway of studded blocks above it.
+Two floors: a low tunnel at the bottom and a walkway of studded blocks above it. Drop through the wrong gap and you fall out of the tunnel. Every pipe has a Piranha Plant.
 
 <img src="docs/stages/sewer.png" alt="Sewer" width="640">
 <details><summary>Map</summary><img src="docs/maps/sewer.png" alt="Map of Sewer"></details>
 
 #### Spire
-A castle without a ceiling, with a tall central tower, side towers and bridges. This stage also has a taller camera.
+A castle without a ceiling, with a tall central tower, side towers and bridges. The floor next to the central tower is gone, so you cross on the bridges or fall. This stage also has a taller camera.
 
 <img src="docs/stages/spire.png" alt="Spire" width="640">
 <details><summary>Map</summary><img src="docs/maps/spire.png" alt="Map of Spire"></details>
@@ -160,6 +162,8 @@ Mario vs Luigi needs two DS systems. On an emulator you can use melonDS: in the 
 ## Adding your own stages
 
 A stage is a Python function in `levels/stages.py` that returns a `StageBuilder`. Add the function to `PAGES` in `build.py`: five stages per page, at most five pages. The slot on the page decides the theme. There is still room for a fifth page.
+
+Mario vs Luigi only loads the enemy models in `ARCHIVE/Dat_enemy.narc`, so not every enemy of the story mode works. `StageBuilder` has helpers for what does work in every theme: `lift()` (rising wooden platforms, sprite 80), `cannon()` (Bullet Bill blaster, sprite 27), `bobomb()`, `flying_block()`, `goomba()` and `koopa()`. Piranha Plants (sprite 23) only work in the pipe theme. Enemies that need another sprite set, such as Dry Bones, Thwomps or Fire Bars, freeze the game in VS mode.
 
 The renderer in `tools/nsmbgfx.py` helps while designing: `build.py` writes a map of every stage to `out/previews/`.
 
