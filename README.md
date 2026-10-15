@@ -20,7 +20,7 @@ This repository does not contain a ROM. The build script applies all changes to 
 | **Stages** | 20: the 5 originals plus 15 new ones |
 | **Pages** | R goes to the next page, L to the previous one; the thumbnails change along |
 | **Course: Random** | picks from all 20 stages |
-| **Title screen** | the Star Showdown logo on the top screen and a single button: Mario Vs. Luigi |
+| **Title screen** | the Star Showdown logo on the top screen and two buttons: Mario Vs. Luigi and Options |
 | **ROM size** | 18 MB instead of 33.5 MB |
 | **Version** | European ROM only (En, Fr, De, Es, It) |
 
@@ -28,7 +28,7 @@ Every slot on a page belongs to a theme: slot 1 is grass, 2 underground, 3 ice, 
 
 ## Title screen
 
-The story mode, Minigames and Options buttons are gone. The title menu only shows "Mario Vs. Luigi", already selected, and the top screen shows the Star Showdown logo instead of the original one.
+The story mode and Minigames buttons are gone. The title menu shows "Mario Vs. Luigi" (selected by default) and "Options", and the top screen shows the Star Showdown logo instead of the original one.
 
 <img src="docs/title.png" alt="Title screen" width="256">
 
@@ -176,7 +176,7 @@ The code changes (European version):
 | ov052 `0x02160E54` | end of `getStage()`: writes the file IDs of the chosen page into the course table (`0x0202C8C4` and `0x0202C5DC`) |
 | ov052 `0x02161B30` | stage select update: R and L flip through the pages and the thumbnails are updated in VRAM |
 | ov052 `0x02161FAC` and `0x02161FC4` | Random picks from all pages instead of five stages |
-| ov009 `0x020E18E0`, `0x020E52B0`, `0x020E5364`, `0x020E5924` | the title menu only draws and accepts the "Mario Vs. Luigi" button and selects it by default; `0x020E5148` also sends the old "Mario Game" case to Mario vs Luigi |
+| ov009 `0x020E18E0`, `0x020E52B0`, `0x020E5364`, `0x020E5924` | the title menu only draws and accepts the "Mario Vs. Luigi" and "Options" buttons, the d-pad jumps between them and Mario Vs. Luigi is selected by default; `0x020E5148` also sends the old "Mario Game" case to Mario vs Luigi |
 | `UI_O_menu_title_logo_o_u_ncg.bin.E??` and `d_2d_UI_O_menu_title_logo_o_u_ncl.bin` | the Star Showdown logo on the top screen (tiles and two palettes) |
 | `menu_title_E??.narc` message 12 | L/R hint text in five languages |
 | banner | the title "Star Showdown" and a custom icon in the DS menu |
@@ -202,12 +202,13 @@ The input in the stage select menu is synchronised between both DS systems, just
 
 ## Tested
 
-All fifteen new stages were played in a real two-player session with two melonDS instances (local wireless), including flipping pages and Random. The stages were also checked in single player in DeSmuME for tiles, enemies and blocks. The title screen with only the Mario Vs. Luigi button was tested in DeSmuME: tapping where the other buttons used to be does nothing.
+All fifteen new stages were played in a real two-player session with two melonDS instances (local wireless), including flipping pages and Random. The stages were also checked in single player in DeSmuME for tiles, enemies and blocks. The title screen was tested in DeSmuME: Mario Vs. Luigi and Options both work, the d-pad jumps between them and tapping where the removed buttons used to be does nothing.
 
 Not tested yet: real hardware and DS Download Play (playing with someone who does not have the cartridge). The new stages are in the same archives that Download Play uses, so it should work.
 
 ## Known limitations
 
+* On the title menu there is an empty spot between Mario Vs. Luigi and Options where Minigames used to be.
 * The "Ready!" screen and the results screen show the name and picture of the original stage in the same slot.
 * New themes (such as desert or lava) are not possible without extra archives with tilesets and backgrounds.
 * Only the European version is supported.
