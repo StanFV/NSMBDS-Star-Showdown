@@ -206,7 +206,7 @@ The input in the stage select menu is synchronised between both DS systems, just
 
 ## Tested
 
-All fifteen new stages were played in a real two-player session with two melonDS instances (local wireless), including flipping pages and Random. The stages were also checked in single player in DeSmuME for tiles, enemies and blocks. The title screen was tested in DeSmuME: Mario Vs. Luigi and Options both work, the d-pad jumps between them and tapping where the removed buttons used to be does nothing.
+All fifteen new stages (in their harder versions, with lifts, blasters and Bob-ombs) were played in a real two-player session with two melonDS instances (local wireless), including flipping pages and Random. The stages were also checked in single player in DeSmuME for tiles, enemies and blocks. The title screen was tested in DeSmuME: Mario Vs. Luigi and Options both work, the d-pad jumps between them and tapping where the removed buttons used to be does nothing.
 
 Not tested yet: real hardware and DS Download Play (playing with someone who does not have the cartridge). The new stages are in the same archives that Download Play uses, so it should work.
 
