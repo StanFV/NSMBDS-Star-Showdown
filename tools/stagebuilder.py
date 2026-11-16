@@ -73,6 +73,33 @@ class StageBuilder:
         self.lvl.sprites.append(Sprite(typ, x, y, bytes(data)))
         return self
 
+    # ---- hazards and moving objects that Mario vs Luigi can load ---------
+    # VS mode only has the enemy models of ARCHIVE/Dat_enemy.narc, so only
+    # these work in every theme.
+    def lift(self, x, y):
+        """Lift spawner (sprite 80): wooden platforms that keep rising from
+        (x, y) to the top of the stage. Platform is about 4 tiles wide."""
+        return self.sprite(80, x, y, bytes([0, 0, 0, 0, 0, 0x10]))
+
+    def cannon(self, x, ground):
+        """Bullet Bill blaster (sprite 27), 3 tiles tall, standing on row `ground`."""
+        self.sprite_set(5, 1)
+        return self.sprite(27, x, ground - 1, bytes([0, 0, 0x10, 0, 0, 0]))
+
+    def bobomb(self, x, y):
+        self.sprite_set(5, 1)
+        return self.sprite(28, x, y)
+
+    def flying_block(self, x, y):
+        """Flying question block (sprite 45) that drops an item when hit."""
+        return self.sprite(45, x, y, bytes([0, 0, 0x20, 0x11, 0, 0]))
+
+    def goomba(self, x, y):
+        return self.sprite(148, x, y)
+
+    def koopa(self, x, y, red=False):
+        return self.sprite(149, x, y, bytes([0, 0, 1 if red else 0, 0, 0, 0]))
+
     def star(self, x, y):
         """Spawn point for the Big Star (sprite 210), numbered automatically."""
         self.sprite(210, x, y, bytes([0, 0, self.star_id, 0, 0, 0]))
@@ -83,6 +110,12 @@ class StageBuilder:
         """Start positions (in tiles) for player 1 and 2. y = the row above the ground."""
         for e, (x, y) in zip(self.lvl.entrances[:2], (p1, p2)):
             e.set(x=x * 16, y=y * 16)
+        return self
+
+    def sprite_set(self, n, value):
+        """Choose value for sprite set n (1..16); this decides which enemy
+        and platform graphics the stage loads (e.g. set 1 = 3 for castle enemies)."""
+        self.lvl.blocks[13][n - 1] = value
         return self
 
     def view_size(self, w, h, y=None):
